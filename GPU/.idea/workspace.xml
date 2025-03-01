@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="GPU" targetName="GPU" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/GPU.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cache-v2-a7380d47bc85d586d0ab.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-7f30b28fb876461e7e15.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-1fa9b29b205bb62591f2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-02-28T12-44-17-0429.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/target-CPU-Debug-b4740ea9bff901b55c74.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-3fe8f634ef32addbf9ee.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCXXCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdC/a.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCXX/a.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/main.cpp.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CUDA.cu" beforeDir="false" afterPath="$PROJECT_DIR$/../CUDA.cu" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/FileContentIndex/ea268a0e-775f-456e-b6a2-80d1ba2b4300.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/FileContentIndex/f3d2317e-0b4b-42f6-be32-1110a7c12fb6.vsidx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/.suo" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/Browse.VC.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/DocumentLayout.backup.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/DocumentLayout.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/Solution.VC.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/GPU.vcxproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/GPU.vcxproj.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/main.cu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.exe.recipe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.ilk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/CudaCompile.read.1u.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/CudaCompile.write.1u.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/GPU.lastbuildstate" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.command.1.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.read.1.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.secondary.1.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.write.1.tlog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu-1006989078.deps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu-567505894.deps" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/vc143.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU_Solution.sln" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.pdb" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;xjxjwan&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/xjxjwan/CUDA.git&quot;,
+    &quot;accountId&quot;: &quot;9a414cf4-9efd-4ed5-bd4b-8540792eb1be&quot;
+  }
+}</component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.2" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2tisA59XH59vKHUT1sgZIMSM2zb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="sortByType" value="true" />
+    <option name="sortKey" value="BY_TYPE" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake 应用程序.GPU.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CPPToolchains&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="GPU" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="GPU" TARGET_NAME="GPU" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="GPU" RUN_TARGET_NAME="GPU">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="" />
+      <created>1740846082758</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1740846082758</updated>
+      <workItem from="1740846084109" duration="1944000" />
+      <workItem from="1740848051202" duration="307000" />
+      <workItem from="1740848427939" duration="78000" />
+      <workItem from="1740848519186" duration="1305000" />
+      <workItem from="1740850564305" duration="108000" />
+      <workItem from="1740850690893" duration="791000" />
+      <workItem from="1740851498739" duration="358000" />
+      <workItem from="1740851880169" duration="612000" />
+      <workItem from="1740852523693" duration="648000" />
+      <workItem from="1740853187782" duration="2803000" />
+      <workItem from="1740859830312" duration="1185000" />
+      <workItem from="1740861048952" duration="819000" />
+      <workItem from="1740861893449" duration="2732000" />
+      <workItem from="1740864655648" duration="6247000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
+  </component>
+</project>

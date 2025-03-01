@@ -122,7 +122,7 @@ double caldt(Grid u_pri, int blocks, dim3 dimGrid, dim3 dimBlock);
 
 
 __global__ void GPU_calamax(Grid u_pri, double *res){
-	__shared__ double a[32][32];  // ???
+	__shared__ double a[32][32];
 	int boundcells = u_pri.BCells;
 	int xCells = u_pri.xCells;
 	int yCells = u_pri.yCells;
@@ -182,46 +182,46 @@ __global__ void GPU_calamax(Grid u_pri, double *res){
 	}
 }
 
-// __global__ void GPU_un_calamax(Grid u_pri, double *res){
-// 	__shared__ double a[32][32];
-// 	int boundcells = u_pri.BCells;
-// 	int xCells = u_pri.xCells;
-// 	int yCells = u_pri.yCells;
-//   	int i = blockIdx.x * blockDim.x + threadIdx.x;
-// 	int j = blockIdx.y * blockDim.y + threadIdx.y;
-//   	int locI = threadIdx.x;
-// 	int locJ = threadIdx.y;
-// 	double v_ij = sqrt(u_pri(i, j, 1) * u_pri(i, j, 1) + u_pri(i, j, 2) * u_pri(i, j, 2));
+__global__ void GPU_un_calamax(Grid u_pri, double *res){
+	__shared__ double a[32][32];
+	int boundcells = u_pri.BCells;
+	int xCells = u_pri.xCells;
+	int yCells = u_pri.yCells;
+  	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+  	int locI = threadIdx.x;
+	int locJ = threadIdx.y;
+	double v_ij = sqrt(u_pri(i, j, 1) * u_pri(i, j, 1) + u_pri(i, j, 2) * u_pri(i, j, 2));
 	
-// 	if(i < xCells + 2 * boundcells && j < yCells + 2 * boundcells){
-// 		a[locI][locJ] = 1.0*(v_ij + sqrt(GAMMA *  u_pri(i,j,3)/ u_pri(i,j,0)));
-// 	}else{
-// 		a[locI][locJ] = 0.0;
-// 	}
+	if(i < xCells + 2 * boundcells && j < yCells + 2 * boundcells){
+		a[locI][locJ] = 1.0*(v_ij + sqrt(GAMMA *  u_pri(i,j,3)/ u_pri(i,j,0)));
+	}else{
+		a[locI][locJ] = 0.0;
+	}
 	
-// 	__syncthreads();
-//     res[j * blockDim.y + i] = a[locI][locJ];
-// }
+	__syncthreads();
+    res[j * blockDim.y + i] = a[locI][locJ];
+}
 
-// double un_caldt(Grid u_pri, int blocks, dim3 dimGrid, dim3 dimBlock){
-//   	double *res;
-//   	cudaMalloc(&res, dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y * sizeof(double));
-//   	CUDA_CHECK;
-//   	GPU_un_calamax<<<dimGrid, dimBlock>>>(u_pri, res);
-//   	CUDA_CHECK;
-//   	double* resHost = new double[dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y];
-//   	cudaMemcpy(resHost, res, sizeof(double) * dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y, cudaMemcpyDeviceToHost);
-//   	CUDA_CHECK;
-//   	double a_max= -1e6;
-//   	for(int i = 0 ; i < dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y ; i++){
-//    		a_max = fmax(resHost[i],a_max);
-//   	}
-//   	delete[] resHost;
-//   	cudaFree(res);
-//   	CUDA_CHECK;
-// 	double dt = C * (fmin(dx, dy) / a_max);
-//   	return dt;
-// }
+double un_caldt(Grid u_pri, int blocks, dim3 dimGrid, dim3 dimBlock){
+  	double *res;
+  	cudaMalloc(&res, dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y * sizeof(double));
+  	CUDA_CHECK;
+  	GPU_un_calamax<<<dimGrid, dimBlock>>>(u_pri, res);
+  	CUDA_CHECK;
+  	double* resHost = new double[dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y];
+  	cudaMemcpy(resHost, res, sizeof(double) * dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y, cudaMemcpyDeviceToHost);
+  	CUDA_CHECK;
+  	double a_max= -1e6;
+  	for(int i = 0 ; i < dimBlock.x * dimBlock.y * dimGrid.x * dimGrid.y ; i++){
+   		a_max = fmax(resHost[i],a_max);
+  	}
+  	delete[] resHost;
+  	cudaFree(res);
+  	CUDA_CHECK;
+	double dt = C * (fmin(dx, dy) / a_max);
+  	return dt;
+}
 
 __device__ double GPU_Minbee(double r){
 	double result;
