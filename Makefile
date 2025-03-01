@@ -9,7 +9,7 @@ CUDA_COMPILER := nvcc
 EXECUTABLE := main
 
 # Source files
-SOURCE_FILES := try.cu
+SOURCE_FILES := main.cu CUDA.cu try.cu
 
 # Object files (replace .cu with .o)
 OBJECT_FILES := $(SOURCE_FILES:.cu=.o)
