@@ -87,7 +87,10 @@ def visualize_single(cur_ax, var_id, t, animating = False):
         cur_v = pow(pow(cur_vx, 2) + pow(cur_vy, 2), 0.5)
         v[row, col] = cur_v
         p[row, col] = cur_p
-        E[row, col] = cur_p / (gama - 1) / cur_rho
+        if cur_rho == 0:
+            E[row, col] = 0.0
+        else:
+            E[row, col] = cur_p / (gama - 1) / cur_rho
 
     data_list = [rho, v, p, E]
 

@@ -6,13 +6,9 @@
 #include <iostream>
 #include <vector>
 #include <array>
-#include <algorithm>
 #include <cmath>
 #include <fstream>
-#include <sstream>
 #include <cassert>
-#include <iomanip>
-#include <string>
 #include <filesystem>
 
 namespace fs = std::filesystem;
@@ -161,6 +157,7 @@ __global__ void setBoundaryCondition(Grid u) {
             u(i, j, v) = u(nCellsX + nGhost - 1, j, v);
         }
     }
+    __syncthreads();
 }
 
 
@@ -289,6 +286,7 @@ __device__ void singleCellReconstruct(double* u_backward_prim, double* u_forward
         u_backward_prim[v] = qBarBackward;
         u_forward_prim[v] = qBarForward;
     }
+    __syncthreads();
 }
 
 
@@ -326,6 +324,7 @@ __global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
             u_backward(i, j, v) = u_backward_cons[v];
             u_forward(i, j, v) = u_forward_cons[v];
         }
+        __syncthreads();
     }
 }
 
@@ -379,6 +378,7 @@ __global__ void halfTimeStepUpdate(Grid uBar_backward, Grid uBar_forward, Grid u
             uBar_backward(i, j, v) = ub_cons[v] - flux_update;
             uBar_forward(i, j, v) = uf_cons[v] - flux_update;
         }
+        __syncthreads();
     }
 }
 
@@ -427,6 +427,7 @@ __global__ void calFlux(Grid flux, Grid uBar_backward, Grid uBar_forward, const 
         flux(i, j, 1) = F_momx_FORCE;
         flux(i, j, 2) = F_momy_FORCE;
         flux(i, j, 3) = F_E_FORCE;
+        __syncthreads();
     }
 }
 
@@ -454,6 +455,7 @@ __global__ void evolution(Grid u, Grid flux, const double dx, const double dy, c
         u(i, j, 1) = cur_momx - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
         u(i, j, 2) = cur_momy - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
         u(i, j, 3) = cur_E - dt / unit_len * (flux(i, j, 3) - F_E_backward);
+        __syncthreads();
     }
 }
 
@@ -587,13 +589,13 @@ int main() {
     double dx = (x1 - x0) / nCellsX, dy = (y1 - y0) / nCellsY;
     double tStop = tStop_list[case_id - 1];
 
-    int nBlocksX = (int)ceil((nCellsX + 2 * nGhost) / nThreadsX);
-    int nBlocksY = (int)ceil((nCellsY + 2 * nGhost) / nThreadsY);
+    int nBlocksX = (nCellsX + 2 * nGhost + nThreadsX - 1) / nThreadsX;
+    int nBlocksY = (nCellsY + 2 * nGhost + nThreadsY - 1) / nThreadsY;
     dim3 dimBlock(nThreadsX, nThreadsY, 1);
     dim3 dimGrid(nBlocksX, nBlocksY, 1);
 
-    int nBlocksXSLIC = (int)ceil((nCellsX + 2 * nGhost) / nThreadsXSLIC);
-    int nBlocksYSLIC = (int)ceil((nCellsY + 2 * nGhost) / nThreadsYSLIC);
+    int nBlocksXSLIC = (nCellsX + 2 * nGhost + nThreadsXSLIC - 1) / nThreadsXSLIC;
+    int nBlocksYSLIC = (nCellsY + 2 * nGhost + nThreadsYSLIC - 1) / nThreadsYSLIC;
     dim3 dimBlockSLIC(nThreadsXSLIC, nThreadsYSLIC, 1);
     dim3 dimGridSLIC(nBlocksXSLIC, nBlocksYSLIC, 1);
 

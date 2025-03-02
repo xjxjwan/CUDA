@@ -10,9 +10,9 @@ import os
 
 
 ## Global Parameters ##
-case_id = 2
-var_id = 3  # var_id: 0-Density, 1-Velocity, 2-Pressure, 3-Energy
-t = 0.3
+case_id = 1
+var_id = 0  # var_id: 0-Density, 1-Velocity, 2-Pressure, 3-Energy
+t = 0.2
 gama = 1.4
 
 if case_id in [1]:

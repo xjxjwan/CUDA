@@ -331,7 +331,7 @@ int main() {
     // parameters
     double C = 0.8;
     double gama = 1.4;
-    int case_id = 2;
+    int case_id = 1;
     int nCellsX = 0;
     int nCellsY = 0;
     double tStart = 0.0;
