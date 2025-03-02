@@ -7,7 +7,6 @@
 #include <vector>
 #include <array>
 
-
 // macro: constant parameters
 #define NUM_VARS 4  // number of independent variables
 #define nGhost 2  // number of ghost cells in each direction
@@ -17,7 +16,6 @@
 #define nThreadsY 32  // number of threads per block in y-direction
 #define nThreadsXOverlap 6  // number of threads per block in x-direction in SLIC
 #define nThreadsYOverlap 6  // number of threads per block in y-direction in SLIC
-
 
 // macro: debugging
 #define CUDA_CHECK {\
@@ -130,10 +128,6 @@ __global__ void setBoundaryCondition(Grid u) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
 
-    if (threadIdx.x == 0) {
-        printf("nCellsX: %d, nCellsY: %d, i: %d, j: %d\n", nCellsX, nCellsY, i, j);
-    }
-
     // transmissive boundary condition
     for (int v = 0; v < NUM_VARS; v++) {
         // lower boundary
@@ -157,7 +151,7 @@ __global__ void setBoundaryCondition(Grid u) {
 
 
 // function: calculate the maximum velocity in the whole grid on GPU
-__global__ void computeAmax(double* aDevice, const Grid& u) {
+__global__ void computeAmax(double* aDevice, Grid u) {
 
     // shared memory for current block
     __shared__ double aBlock[nThreadsX][nThreadsY];
@@ -224,6 +218,7 @@ double computeTimeStep(const Grid& u, const double& dx, const double& dy, const 
     int a_size = dimGrid.x * dimGrid.y;
     cudaMalloc(&aDevice, a_size * sizeof(double));
     computeAmax<<<dimGrid, dimBlock>>>(aDevice, u);
+    CUDA_CHECK;
 
     // transfer data to CPU
     double* aHost = new double [a_size];
@@ -241,97 +236,112 @@ double computeTimeStep(const Grid& u, const double& dx, const double& dy, const 
 }
 
 
+// function: initialization
+__global__ void initialize(Grid u, const double x0, const double y0, const double y1,
+    const double dx, const double dy, const int case_id) {
+
+    // get coordinates
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    double bubble_center_x = 35;
+    double bubble_center_y = 0.5 * y1;
+    double bubble_radius = 25;
+
+    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
+        double x = x0 + (i - nGhost + 0.5) * dx;
+        double y = y0 + (j - nGhost + 0.5) * dy;
+        double u_ij_prim[NUM_VARS];
+        double u_ij_cons[NUM_VARS];
+
+        if (case_id == 1) {
+            if (x >= 0.5 && y >= 0.5) {
+                u_ij_prim[0] = 1.5;
+                u_ij_prim[1] = 0.0;
+                u_ij_prim[2] = 0.0;
+                u_ij_prim[3] = 1.5;
+            }
+            if (x < 0.5 && y >= 0.5) {
+                u_ij_prim[0] = 0.5325;
+                u_ij_prim[1] = 1.206;
+                u_ij_prim[2] = 0.0;
+                u_ij_prim[3] = 0.3;
+            }
+            if (x < 0.5 && y < 0.5) {
+                u_ij_prim[0] = 0.138;
+                u_ij_prim[1] = 1.206;
+                u_ij_prim[2] = 1.206;
+                u_ij_prim[3] = 0.029;
+            }
+            if (x >= 0.5 && y < 0.5) {
+                u_ij_prim[0] = 0.5325;
+                u_ij_prim[1] = 0.0;
+                u_ij_prim[2] = 1.206;
+                u_ij_prim[3] = 0.3;
+            }
+        }
+
+        if (case_id == 2) {
+            if (x < 5) {
+                u_ij_prim[0] = 1.7755;
+                u_ij_prim[1] = 110.63;
+                u_ij_prim[2] = 0.0;
+                u_ij_prim[3] = 159060.0;
+            }
+            else if (pow(pow(x - bubble_center_x, 2) + pow(y - bubble_center_y, 2), 0.5) <= bubble_radius) {
+                u_ij_prim[0] = 0.214;
+                u_ij_prim[1] = 0.0;
+                u_ij_prim[2] = 0.0;
+                u_ij_prim[3] = 101325.0;
+            }
+            else {
+                u_ij_prim[0] = 1.29;
+                u_ij_prim[1] = 0.0;
+                u_ij_prim[2] = 0.0;
+                u_ij_prim[3] = 101325.0;
+            }
+        }
+
+        // transform from primitive to conservative and store
+        prim2consDevice(u_ij_cons, u_ij_prim);
+        u(i, j, 0) = u_ij_cons[0];
+        u(i, j, 1) = u_ij_cons[1];
+        u(i, j, 2) = u_ij_cons[2];
+        u(i, j, 3) = u_ij_cons[3];
+    }
+}
+
+
 // function: mainloop
 int main() {
 
     // parameters
-    int case_id = 0;
-    double x0 = 0.0, y0 = 0.0;
-    double x1 = 0.0, y1 = 0.0;
-    double dx = 0.0, dy = 0.0;
-    int nCellsX = 0, nCellsY = 0;
-    double tStart = 0.0, tStop = 0.0;
-    std::array sim_range = {x0, x1, y0, y1};
-    Grid u(nCellsX, nCellsY, sim_range);  // in conservative form
-    CUDA_CHECK;
+    int case_id = 1;
+    std::array<int, 2> nCellsX_list = {400, 500};
+    std::array<int, 2> nCellsY_list = {400, 197};
+    std::array<double, 2> x1_list = {1.0, 225.0};
+    std::array<double, 2> y1_list = {1.0, 89.0};
+    std::array<double, 2> tStop_list = {0.3, 0.3};
+
+    double x0 = 0.0, y0 = 0.0, tStart = 0.0;
+    int nCellsX = nCellsX_list[case_id - 1], nCellsY = nCellsY_list[case_id - 1];
+    double x1 = x1_list[case_id - 1], y1 = y1_list[case_id - 1];
+    double dx = (x1 - x0) / nCellsX, dy = (y1 - y0) / nCellsY;
+    double tStop = tStop_list[case_id - 1];
 
     // initialization
-    if (case_id == 1) { // Quadrant problem
-
-        nCellsX = 400; nCellsY = 400;
-        x1 = 1.0; y1 = 1.0;
-        u.nCellsX = nCellsX; u.nCellsY = nCellsY;
-        u.x1 = x1; u.y1 = y1;
-        dx = (x1 - x0) / nCellsX;
-        dy = (y1 - y0) / nCellsY;
-        tStop = 0.3;
-
-        for (int i = nGhost; i < nCellsX + nGhost; i++) {
-            for (int j = nGhost; j < nCellsY + nGhost; j++) {
-
-                // get coordinates
-                double x = x0 + (i - nGhost + 0.5) * dx;
-                double y = y0 + (j - nGhost + 0.5) * dy;
-                std::array<double, 4> u_ij_prim{};
-
-                if (x >= 0.5 && y >= 0.5) {u_ij_prim = {1.5, 0.0, 0.0, 1.5};}
-                if (x < 0.5 && y >= 0.5) {u_ij_prim = {0.5325, 1.206, 0.0, 0.3};}
-                if (x < 0.5 && y < 0.5) {u_ij_prim = {0.138, 1.206, 1.206, 0.029};}
-                if (x >= 0.5 && y < 0.5) {u_ij_prim = {0.5325, 0.0, 1.206, 0.3};}
-
-                // transform from primitive to conservative and store
-                std::array<double, 4> u_ij_cons = prim2consHost(u_ij_prim);
-                for (int v = 0; v < NUM_VARS; v++) {
-                    u(i, j, v) = u_ij_cons[v];
-                }
-            }
-        }
-    }
-
-    if (case_id == 2) { // Shock-bubble interaction
-
-        nCellsX = 500; nCellsY = 197;
-        x1 = 225; y1 = 89;
-        u.nCellsX = nCellsX; u.nCellsY = nCellsY;
-        u.x1 = x1; u.y1 = y1;
-        double bubble_center_x = 35;
-        double bubble_center_y = 0.5 * y1;
-        dx = (x1 - x0) / nCellsX;
-        dy = (y1 - y0) / nCellsY;
-        tStop = 0.3;
-
-        for (int i = nGhost; i < nCellsX + nGhost; i++) {
-            for (int j = nGhost; j < nCellsY + nGhost; j++) {
-
-                // get coordinates
-                double x = x0 + (i - nGhost + 0.5) * dx;
-                double y = y0 + (j - nGhost + 0.5) * dy;
-                std::array<double, 4> u_ij_prim{};
-
-                if (x < 5) {  // air left to shock
-                    u_ij_prim = {1.7755, 110.63, 0.0, 159060.0};
-                } else if (pow(pow(x - bubble_center_x, 2) + pow(y - bubble_center_y, 2), 0.5) <= 25) {  // inside bubble
-                    u_ij_prim = {0.214, 0.0, 0.0, 101325.0};
-                } else {  // air right to shock
-                    u_ij_prim = {1.29, 0.0, 0.0, 101325.0};
-                }
-
-                // transform from primitive to conservative and store
-                std::array<double, 4> u_ij_cons = prim2consHost(u_ij_prim);
-                for (int v = 0; v < NUM_VARS; v++) {
-                    u(i, j, v) = u_ij_cons[v];
-                }
-            }
-        }
-    }
-    CUDA_CHECK;
+    std::array<double, 4> sim_range = {x0, x1, y0, y1};
+    Grid u(nCellsX, nCellsY, sim_range);  // in conservative form
 
     int nBlocksX = (int)ceil((nCellsX + 2 * nGhost) / nThreadsX);
     int nBlocksY = (int)ceil((nCellsY + 2 * nGhost) / nThreadsY);
     dim3 dimBlock(nThreadsX, nThreadsY, 1);
     dim3 dimGrid(nBlocksX, nBlocksY, 1);
+
+    initialize<<<dimGrid, dimBlock>>>(u, x0, y0, y1, dx, dy, case_id);
+    CUDA_CHECK;
+
+    // boundary conditions
     setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
-    std::cout << "Checking" << std::endl;
     CUDA_CHECK;
 
     // update data
@@ -349,3 +359,4 @@ int main() {
 
     return 0;
 }
+

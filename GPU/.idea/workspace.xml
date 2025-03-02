@@ -24,69 +24,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/GPU.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cache-v2-a7380d47bc85d586d0ab.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-7f30b28fb876461e7e15.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-1fa9b29b205bb62591f2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-02-28T12-44-17-0429.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/target-CPU-Debug-b4740ea9bff901b55c74.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-3fe8f634ef32addbf9ee.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCXXCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeCXXCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdC/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCXX/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/main.cpp.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CUDA.cu" beforeDir="false" afterPath="$PROJECT_DIR$/../CUDA.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/FileContentIndex/ea268a0e-775f-456e-b6a2-80d1ba2b4300.vsidx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/FileContentIndex/f3d2317e-0b4b-42f6-be32-1110a7c12fb6.vsidx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/.suo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/Browse.VC.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/DocumentLayout.backup.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/DocumentLayout.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/.vs/GPU_Solution/v17/Solution.VC.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/GPU.vcxproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/GPU.vcxproj.user" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/main.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.exe.recipe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.ilk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.log" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/CudaCompile.read.1u.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/CudaCompile.write.1u.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/GPU.lastbuildstate" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.command.1.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.read.1.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.secondary.1.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/GPU.tlog/link.write.1.tlog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu-1006989078.deps" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/kernel.cu.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu-567505894.deps" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu.cache" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/main.cu.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU/x64/Debug/vc143.pdb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/GPU_Solution.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.exp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.lib" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GPU_Solution/x64/Debug/GPU.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main.cu" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -176,7 +127,9 @@
       <workItem from="1740859830312" duration="1185000" />
       <workItem from="1740861048952" duration="819000" />
       <workItem from="1740861893449" duration="2732000" />
-      <workItem from="1740864655648" duration="6247000" />
+      <workItem from="1740864655648" duration="10961000" />
+      <workItem from="1740876509381" duration="2828000" />
+      <workItem from="1740879416587" duration="348000" />
     </task>
     <servers />
   </component>
