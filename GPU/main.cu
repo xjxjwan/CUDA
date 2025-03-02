@@ -6,6 +6,16 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <sstream>
+#include <cassert>
+#include <iomanip>
+#include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 // macro: constant parameters
 #define NUM_VARS 4  // number of independent variables
@@ -14,8 +24,8 @@
 #define gamma 1.4  // adiabatic index of ideal gas
 #define nThreadsX 32  // number of threads per block in x-direction
 #define nThreadsY 32  // number of threads per block in y-direction
-#define nThreadsXOverlap 6  // number of threads per block in x-direction in SLIC
-#define nThreadsYOverlap 6  // number of threads per block in y-direction in SLIC
+#define nThreadsXSLIC 6  // number of threads per block in x-direction in SLIC
+#define nThreadsYSLIC 6  // number of threads per block in y-direction in SLIC
 
 // macro: debugging
 #define CUDA_CHECK {\
@@ -27,20 +37,30 @@
     }\
 }
 
+enum Processor {CPU, GPU};
 
 // structure: data storage and process
 struct Grid {
-    double *data;
-    int nCellsX, nCellsY;
-    double x0, x1, y0, y1;
+
+    // attributes
+    double* data;
+    int nCellsX;
+    int nCellsY;
+    Processor processor;
 
     // format for building an instance
-    Grid(const int nX, const int nY, const std::array<double, 4>& sim_range) {
+    Grid(const int nX, const int nY, Processor p) {
         nCellsX = nX;
         nCellsY = nY;
-        x0 = sim_range[0], x1 = sim_range[1];
-        y0 = sim_range[2], y1 = sim_range[3];
-        cudaMalloc((void **)& data, (nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS * sizeof(double));
+        processor = p;
+        switch (processor) {
+            case CPU:
+                data = new double[(nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS];
+                break;
+            case GPU:
+                cudaMalloc((void **)& data, (nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS * sizeof(double));
+                break;
+        }
     }
 
     // operator functions
@@ -56,20 +76,17 @@ struct Grid {
 
 
 // function: transform from primitive to conservative on CPU
-std::array<double, 4> prim2consHost(std::array<double, 4> const& u_ij) {
+void prim2consHost(double* u_ij_cons, const double* u_ij_prim) {
 
-    const double rho = u_ij[0];
-    const double u = u_ij[1];
-    const double v = u_ij[2];
-    const double p = u_ij[3];
+    const double rho = u_ij_prim[0];
+    const double u = u_ij_prim[1];
+    const double v = u_ij_prim[2];
+    const double p = u_ij_prim[3];
 
-    std::array<double, 4> res{};
-    res[0] = rho;  // rho
-    res[1] = rho * u;  // momx
-    res[2] = rho * v;  // momy
-    res[3] = p / (gamma - 1) + 0.5 * rho * (pow(u, 2) + pow(v, 2));  // E
-
-    return res;
+    u_ij_cons[0] = rho;  // rho
+    u_ij_cons[1] = rho * u;  // momx
+    u_ij_cons[2] = rho * v;  // momy
+    u_ij_cons[3] = p / (gamma - 1) + 0.5 * rho * (pow(u, 2) + pow(v, 2));  // E
 }
 
 
@@ -89,20 +106,17 @@ __device__ void prim2consDevice(double* u_ij_cons, const double* u_ij_prim) {
 
 
 // function: transform from conservative to primitive on CPU
-std::array<double, 4> cons2primHost(std::array<double, 4> const& u_ij) {
+void cons2primHost(double* u_ij_prim, const double* u_ij_cons) {
 
-    const double rho = u_ij[0];
-    const double momx = u_ij[1];
-    const double momy = u_ij[2];
-    const double E = u_ij[3];
+    const double rho = u_ij_cons[0];
+    const double momx = u_ij_cons[1];
+    const double momy = u_ij_cons[2];
+    const double E = u_ij_cons[3];
 
-    std::array<double, 4> res{};
-    res[0] = rho;  // rho
-    res[1] = momx / rho;  // u
-    res[2] = momy / rho;  // v
-    res[3] = (gamma - 1) * (E - 0.5 * pow(momx, 2) / rho - 0.5 * pow(momy, 2) / rho);  // p
-
-    return res;
+    u_ij_prim[0] = rho;  // rho
+    u_ij_prim[1] = momx / rho;  // u
+    u_ij_prim[2] = momy / rho;  // v
+    u_ij_prim[3] = (gamma - 1) * (E - 0.5 * pow(momx, 2) / rho - 0.5 * pow(momy, 2) / rho);  // p
 }
 
 
@@ -236,6 +250,251 @@ double computeTimeStep(const Grid& u, const double& dx, const double& dy, const 
 }
 
 
+// function: calculate slope limiter
+__device__ double getLimiter(double r) {
+
+    // // Minbee
+    // if (r <= 0) {return 0.0;}
+    // if (r > 0 && r <= 1) {return r;}
+    // if (r > 1) {return fmin(1.0, 2.0 / (1 + r));}
+
+    // Superbee
+    if (r <= 0.0) {return 0.0;}
+    if (r > 0.0 and r <= 0.5) {double res = 2 * r; return res;}
+    if (r > 0.5 and r <= 1.0) {return 1.0;}
+    if (r > 1.0) {double temp = fmin(r, 2.0 / (1 + r)); return fmin(temp, 2.0);}
+
+    return 0;
+}
+
+
+// function: reconstruct a single variable
+__device__ void singleCellReconstruct(double* u_backward_prim, double* u_forward_prim,
+    double* u0_prim, double* u_prim, double* u1_prim) {
+
+    double q0 = 0.0, q = 0.0, q1 = 0.0;
+    for (int v = 0; v < NUM_VARS; v++) {
+        q0 = u0_prim[v]; q = u_prim[v]; q1 = u1_prim[v];
+
+        double r = (q - q0) / (q1 - q);
+        double slope_limiter = getLimiter(r);
+        // double slope_limiter = 0.0;
+
+        double delta_backward = q - q0;
+        double delta_forward = q1 - q;
+        double delta_i = 0.5 * (delta_backward + delta_forward);
+
+        double qBarBackward = q - 0.5 * slope_limiter * delta_i;
+        double qBarForward = q + 0.5 * slope_limiter * delta_i;
+        u_backward_prim[v] = qBarBackward;
+        u_forward_prim[v] = qBarForward;
+    }
+}
+
+
+// function: data reconstruction
+template<int axis>
+__global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
+
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+
+    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
+        // get data
+        double u0_prim[NUM_VARS]; double u_prim[NUM_VARS]; double u1_prim[NUM_VARS];
+        double u0_cons[NUM_VARS]; double u_cons[NUM_VARS]; double u1_cons[NUM_VARS];
+        for (int v = 0; v < NUM_VARS; v++) {
+            u0_cons[v] = axis == 0 ? u(i - 1, j, v) : u(i, j - 1, v);
+            u_cons[v] = u(i, j, v);
+            u1_cons[v] = axis == 0 ? u(i + 1, j, v) : u(i, j + 1, v);
+        }
+
+        // transform from conservative to primitive
+        cons2primDevice(u0_prim, u0_cons);
+        cons2primDevice(u_prim, u_cons);
+        cons2primDevice(u1_prim, u1_cons);
+
+        // reconstruct in primitive form
+        double u_backward_prim[NUM_VARS]; double u_forward_prim[NUM_VARS];
+        double u_backward_cons[NUM_VARS]; double u_forward_cons[NUM_VARS];
+        singleCellReconstruct(u_backward_prim, u_forward_prim, u0_prim, u_prim, u1_prim);
+
+        // transform reconstructed data from primitive to conservative and store
+        prim2consDevice(u_backward_cons, u_backward_prim);
+        prim2consDevice(u_forward_cons, u_forward_prim);
+        for (int v = 0; v < NUM_VARS; v++) {
+            u_backward(i, j, v) = u_backward_cons[v];
+            u_forward(i, j, v) = u_forward_cons[v];
+        }
+    }
+}
+
+
+// function: calculate flux functions
+template<int axis>
+__device__ void flux_func(double* flux, double* u_cons) {
+
+    double u_prim[NUM_VARS];
+    cons2primDevice(u_prim, u_cons);
+    double rho = u_cons[0], momx = u_cons[1], momy = u_cons[2], E = u_cons[3];
+    double vx = u_prim[1], vy = u_prim[2], p = u_prim[3];
+
+    double rho_flux = axis == 0 ? momx : momy;
+    double momx_flux = axis == 0 ? rho * pow(vx, 2) + p : rho * vx * vy;
+    double momy_flux = axis == 0 ? rho * vy * vx : rho * pow(vy, 2) + p;
+    double E_flux = axis == 0 ? (E + p) * vx : (E + p) * vy;
+
+    flux[0] = rho_flux;
+    flux[1] = momx_flux;
+    flux[2] = momy_flux;
+    flux[3] = E_flux;
+}
+
+
+// function: half-time step update
+template<int axis>
+__global__ void halfTimeStepUpdate(Grid uBar_backward, Grid uBar_forward, Grid u_backward, Grid u_forward,
+    const double dx, const double dy, const double dt) {
+
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    double unit_len = axis == 0 ? dx : dy;
+
+    if (i >= 0 && i < u_forward.nCellsX + 2 * nGhost && j >= 0 && j < u_forward.nCellsY + 2 * nGhost) {
+        // get data
+        double uf_cons[NUM_VARS]; double ub_cons[NUM_VARS];
+        for (int v = 0; v < NUM_VARS; v++) {
+            uf_cons[v] = u_forward(i, j, v);
+            ub_cons[v] = u_backward(i, j, v);
+        }
+
+        // calculate flux functions
+        double flux_f[NUM_VARS], flux_b[NUM_VARS];
+        flux_func<axis>(flux_b, ub_cons);
+        flux_func<axis>(flux_f, uf_cons);
+
+        // update
+        for (int v = 0; v < NUM_VARS; v++) {
+            double flux_update = 0.5 * (dt / unit_len) * (flux_f[v] - flux_b[v]);
+            uBar_backward(i, j, v) = ub_cons[v] - flux_update;
+            uBar_forward(i, j, v) = uf_cons[v] - flux_update;
+        }
+    }
+}
+
+
+// function: calculate numerical fluxes with FORCE scheme
+template<int axis>
+__global__ void calFlux(Grid flux, Grid uBar_backward, Grid uBar_forward, const double dx, const double dy, const double dt) {
+
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    double unit_len = axis == 0 ? dx : dy;
+
+    if (i >= nGhost && i < uBar_forward.nCellsX + nGhost && j >= nGhost && j < uBar_forward.nCellsY + nGhost) {
+        // get data
+        double uf_cons[NUM_VARS]; double ub_cons[NUM_VARS];
+        for (int v = 0; v < NUM_VARS; v++) {
+            ub_cons[v] = uBar_forward(i, j, v);
+            uf_cons[v] = axis == 0 ? uBar_backward(i + 1, j, v) : uBar_backward(i, j + 1, v);
+        }
+
+        // calculate flux functions
+        double flux_f[NUM_VARS], flux_b[NUM_VARS];
+        flux_func<axis>(flux_b, ub_cons);
+        flux_func<axis>(flux_f, uf_cons);
+
+        // L-F scheme
+        const double F_rho_LF = 0.5 * unit_len / dt * (ub_cons[0] - uf_cons[0]) + 0.5 * (flux_b[0] + flux_f[0]);
+        const double F_momx_LF = 0.5 * unit_len / dt * (ub_cons[1] - uf_cons[1]) + 0.5 * (flux_b[1] + flux_f[1]);
+        const double F_momy_LF = 0.5 * unit_len / dt * (ub_cons[2] - uf_cons[2]) + 0.5 * (flux_b[2] + flux_f[2]);
+        const double F_E_LF = 0.5 * unit_len / dt * (ub_cons[3] - uf_cons[3]) + 0.5 * (flux_b[3] + flux_f[3]);
+
+        // RI scheme
+        double u_half_cons[NUM_VARS]; double F_RI[NUM_VARS];
+        u_half_cons[0] = 0.5 * (ub_cons[0] + uf_cons[0]) - 0.5 * dt / unit_len * (flux_f[0] - flux_b[0]);
+        u_half_cons[1] = 0.5 * (ub_cons[1] + uf_cons[1]) - 0.5 * dt / unit_len * (flux_f[1] - flux_b[1]);
+        u_half_cons[2] = 0.5 * (ub_cons[2] + uf_cons[2]) - 0.5 * dt / unit_len * (flux_f[2] - flux_b[2]);
+        u_half_cons[3] = 0.5 * (ub_cons[3] + uf_cons[3]) - 0.5 * dt / unit_len * (flux_f[3] - flux_b[3]);
+        flux_func<axis>(F_RI, u_half_cons);
+
+        // FORCE scheme
+        const double F_rho_FORCE = 0.5 * (F_rho_LF + F_RI[0]);
+        const double F_momx_FORCE = 0.5 * (F_momx_LF + F_RI[1]);
+        const double F_momy_FORCE = 0.5 * (F_momy_LF + F_RI[2]);
+        const double F_E_FORCE = 0.5 * (F_E_LF + F_RI[3]);
+        flux(i, j, 0) = F_rho_FORCE;
+        flux(i, j, 1) = F_momx_FORCE;
+        flux(i, j, 2) = F_momy_FORCE;
+        flux(i, j, 3) = F_E_FORCE;
+    }
+}
+
+
+// function: numerical evolution
+template<int axis>
+__global__ void evolution(Grid u, Grid flux, const double dx, const double dy, const double dt) {
+
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    double unit_len = axis == 0 ? dx : dy;
+
+    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
+        double F_rho_backward = axis == 0 ? flux(i - 1, j, 0) : flux(i, j - 1, 0);
+        double F_momx_backward = axis == 0 ? flux(i - 1, j, 1) : flux(i, j - 1, 1);
+        double F_momy_backward = axis == 0 ? flux(i - 1, j, 2) : flux(i, j - 1, 2);
+        double F_E_backward = axis == 0 ? flux(i - 1, j, 3) : flux(i, j - 1, 3);
+
+        double cur_rho = u(i, j, 0);
+        double cur_momx = u(i, j, 1);
+        double cur_momy = u(i, j, 2);
+        double cur_E = u(i, j, 3);
+
+        u(i, j, 0) = cur_rho - dt / unit_len * (flux(i, j, 0) - F_rho_backward);
+        u(i, j, 1) = cur_momx - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
+        u(i, j, 2) = cur_momy - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
+        u(i, j, 3) = cur_E - dt / unit_len * (flux(i, j, 3) - F_E_backward);
+    }
+}
+
+
+// function: data recording
+void dataRecord(Grid uHost, const int case_id, const double nCellsX, const double nCellsY,
+    const double x0, const double y0, const double dx, const double dy, const double t) {
+
+    // check whether the directory exists, create one if not
+    std::ostringstream folderPath;
+    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/res/Case_" << case_id;
+    std::string caseFolder = folderPath.str();
+    if (!fs::exists(caseFolder)) {
+        fs::create_directories(caseFolder);
+    }
+
+    // data recording
+    std::ostringstream oss;
+    oss << caseFolder << "/T=" << std::setprecision(2) << t << ".txt";
+    std::string fileName = oss.str();
+    std::fstream outFile(fileName, std::ios::out);
+
+    double* u_ij_prim = new double[NUM_VARS];
+    double* u_ij_cons = new double[NUM_VARS];
+
+    for (int i = nGhost; i < nCellsX + nGhost; i++) {
+        for (int j = nGhost; j < nCellsY + nGhost; j++) {
+            for (int v = 0; v < NUM_VARS; v++) {
+                u_ij_cons[v] = uHost(i, j, v);
+            }
+            cons2primHost(u_ij_prim, u_ij_cons);
+
+            outFile << x0 + (i - nGhost + 0.5) * dx << ", " << y0 + (j - nGhost + 0.5) * dy
+            << ", " << u_ij_cons[0] << ", " << u_ij_cons[1] << ", " << u_ij_cons[2] << ", " << u_ij_cons[3]
+            << std::endl;
+        }
+    }
+    outFile.close();
+}
+
+
 // function: initialization
 __global__ void initialize(Grid u, const double x0, const double y0, const double y1,
     const double dx, const double dy, const int case_id) {
@@ -315,7 +574,7 @@ __global__ void initialize(Grid u, const double x0, const double y0, const doubl
 int main() {
 
     // parameters
-    int case_id = 1;
+    int case_id = 1;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
     std::array<int, 2> nCellsX_list = {400, 500};
     std::array<int, 2> nCellsY_list = {400, 197};
     std::array<double, 2> x1_list = {1.0, 225.0};
@@ -328,15 +587,19 @@ int main() {
     double dx = (x1 - x0) / nCellsX, dy = (y1 - y0) / nCellsY;
     double tStop = tStop_list[case_id - 1];
 
-    // initialization
-    std::array<double, 4> sim_range = {x0, x1, y0, y1};
-    Grid u(nCellsX, nCellsY, sim_range);  // in conservative form
-
     int nBlocksX = (int)ceil((nCellsX + 2 * nGhost) / nThreadsX);
     int nBlocksY = (int)ceil((nCellsY + 2 * nGhost) / nThreadsY);
     dim3 dimBlock(nThreadsX, nThreadsY, 1);
     dim3 dimGrid(nBlocksX, nBlocksY, 1);
 
+    int nBlocksXSLIC = (int)ceil((nCellsX + 2 * nGhost) / nThreadsXSLIC);
+    int nBlocksYSLIC = (int)ceil((nCellsY + 2 * nGhost) / nThreadsYSLIC);
+    dim3 dimBlockSLIC(nThreadsXSLIC, nThreadsYSLIC, 1);
+    dim3 dimGridSLIC(nBlocksXSLIC, nBlocksYSLIC, 1);
+
+    // initialization
+    Grid uHost(nCellsX, nCellsY, CPU);  // data on CPU for recording
+    Grid u(nCellsX, nCellsY, GPU);  // data in conservative form on GPU
     initialize<<<dimGrid, dimBlock>>>(u, x0, y0, y1, dx, dy, case_id);
     CUDA_CHECK;
 
@@ -344,18 +607,113 @@ int main() {
     setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
     CUDA_CHECK;
 
+    // intermediate data storage on GPU
+    // data reconstruction
+    Grid uL(nCellsX, nCellsY, GPU);
+    Grid uR(nCellsX, nCellsY, GPU);
+    Grid uU(nCellsX, nCellsY, GPU);
+    Grid uD(nCellsX, nCellsY, GPU);
+    // half-time step update
+    Grid uLBar(nCellsX, nCellsY, GPU);
+    Grid uRBar(nCellsX, nCellsY, GPU);
+    Grid uUBar(nCellsX, nCellsY, GPU);
+    Grid uDBar(nCellsX, nCellsY, GPU);
+    // numerical fluxes
+    Grid fluxX(nCellsX - 1, nCellsY - 1, GPU);
+    Grid fluxY(nCellsX - 1, nCellsY - 1, GPU);
+
     // update data
     double t = tStart;
-    // std::array t_record_list = {0.1, 0.2, 0.3};
-    // int record_index = 0;
+    std::array t_record_list = {0.1, 0.2, 0.3};
+    int record_index = 0;
     int counter = 0;
     do {
         // compute time step
         double dt = computeTimeStep(u, dx, dy, dimGrid, dimBlock);
         t = t + dt;
-        std::cout << "ite = " << counter + 1 << ", time = " << t << std::endl;
+        counter++;
+        std::cout << "ite = " << counter<< ", time = " << t << std::endl;
+
+
+        //***********************************************************************************************************//
+        // data reconstruction in x-direction
+        dataReconstruct<0><<<dimGridSLIC, dimBlockSLIC>>>(uL, uR, u);
+        CUDA_CHECK;
+
+        // boundary conditions
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(uL);
+        CUDA_CHECK;
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(uR);
+        CUDA_CHECK;
+
+        // half-time step update in x-direction
+        halfTimeStepUpdate<0><<<dimGridSLIC, dimBlockSLIC>>>(uLBar, uRBar, uL, uR, dx, dy, dt);
+        CUDA_CHECK;
+
+        // evolution in x-direction with FORCE scheme
+        calFlux<0><<<dimGridSLIC, dimBlockSLIC>>>(fluxX, uLBar, uRBar, dx, dy, dt);
+        CUDA_CHECK;
+
+        // numerical evolution in x-direction
+        evolution<0><<<dimGridSLIC, dimBlockSLIC>>>(u, fluxX, dx, dy, dt);
+        CUDA_CHECK;
+
+        // boundary conditions
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
+        CUDA_CHECK;
+
+
+        //***********************************************************************************************************//
+        // data reconstruction in y-direction
+        dataReconstruct<1><<<dimGridSLIC, dimBlockSLIC>>>(uD, uU, u);
+        CUDA_CHECK;
+
+        // boundary conditions
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(uD);
+        CUDA_CHECK;
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(uU);
+        CUDA_CHECK;
+
+        // half-time step update in x-direction
+        halfTimeStepUpdate<1><<<dimGridSLIC, dimBlockSLIC>>>(uDBar, uUBar, uD, uU, dx, dy, dt);
+        CUDA_CHECK;
+
+        // evolution in y-direction with FORCE scheme
+        calFlux<1><<<dimGridSLIC, dimBlockSLIC>>>(fluxY, uDBar, uUBar, dx, dy, dt);
+        CUDA_CHECK;
+
+        // numerical evolution in y-direction
+        evolution<1><<<dimGridSLIC, dimBlockSLIC>>>(u, fluxY, dx, dy, dt);
+        CUDA_CHECK;
+
+        // boundary conditions
+        setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
+        CUDA_CHECK;
+
+
+        //***********************************************************************************************************//
+        // data recording
+        if (t >= t_record_list[record_index]) {
+            std::cout << "Recording: t = " << t << std::endl;
+            record_index++;
+
+            // copy data from GPU to CPU
+            cudaMemcpy(uHost.data, u.data, (nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS * sizeof(double),
+                cudaMemcpyDeviceToHost);
+
+            // record
+            dataRecord(uHost, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t);
+        }
 
     } while (t < tStop);
+
+    // release GPU memory
+    cudaFree(u.data);
+    cudaFree(uL.data); cudaFree(uR.data);
+    cudaFree(uD.data); cudaFree(uU.data);
+    cudaFree(uLBar.data); cudaFree(uRBar.data);
+    cudaFree(uDBar.data); cudaFree(uUBar.data);
+    cudaFree(fluxX.data); cudaFree(fluxY.data);
 
     return 0;
 }
