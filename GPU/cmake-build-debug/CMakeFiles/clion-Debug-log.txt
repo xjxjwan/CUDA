@@ -5,6 +5,6 @@
 -- Check for working CUDA compiler: C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/bin/nvcc.exe - skipped
 -- Detecting CUDA compile features
 -- Detecting CUDA compile features - done
--- Configuring done (3.3s)
+-- Configuring done (3.4s)
 -- Generating done (0.0s)
 -- Build files have been written to: D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug

@@ -326,6 +326,108 @@ void setBoundaryCondition(std::vector<std::vector<std::array<double, 4>>>& u, co
 }
 
 
+void dataRecord(const std::vector<std::vector<std::array<double, 4>>>& u, const int case_id, const double nCellsX,
+    const double nCellsY, const double x0, const double y0, const double dx, const double dy,
+    const double t, const double gama) {
+
+    // transform
+    std::vector<std::vector<std::array<double, 4>>> u_prim;
+    u_prim.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));
+    for (int i = 0; i < nCellsX + 4; i++) {
+        for (int j = 0; j < nCellsY + 4; j++) {
+            u_prim[i][j] = cons2prim(u[i][j], gama);
+        }
+    }
+
+    // check whether the directory exists, create one if not
+    std::ostringstream folderPath;
+    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/res/Case_" << case_id;
+    std::string caseFolder = folderPath.str();
+    if (!fs::exists(caseFolder)) {
+        fs::create_directories(caseFolder);
+    }
+
+    // data recording
+    std::ostringstream oss;
+    oss << caseFolder << "/T=" << std::setprecision(2) << t << ".txt";
+    std::string fileName = oss.str();
+    std::fstream outFile(fileName, std::ios::out);
+    for (int i = 2; i < nCellsX + 2; i++) {
+        for (int j = 2; j < nCellsY + 2; j++) {
+            // std::cout << x0 + (i - 1) * dx << ", " << u[i][0] << ", " << u[i][1] << ", " << u[i][2] << std::endl;
+            outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
+            << ", " << u_prim[i][j][0] << ", " << u_prim[i][j][1] << ", " << u_prim[i][j][2] << ", " << u_prim[i][j][3]
+            << std::endl;
+        }
+    }
+    outFile.close();
+}
+
+
+void dataRecordDebug(const std::vector<std::vector<std::array<double, 4>>>& u, const int case_id, const double nCellsX,
+    const double nCellsY, const double x0, const double y0, const double dx, const double dy,
+    std::string name, const double gama) {
+
+    // transform
+    std::vector<std::vector<std::array<double, 4>>> u_prim;
+    u_prim.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));
+    for (int i = 0; i < nCellsX + 4; i++) {
+        for (int j = 0; j < nCellsY + 4; j++) {
+            u_prim[i][j] = cons2prim(u[i][j], gama);
+        }
+    }
+
+    // check whether the directory exists, create one if not
+    std::ostringstream folderPath;
+    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/Debugging";
+    std::string caseFolder = folderPath.str();
+    if (!fs::exists(caseFolder)) {
+        fs::create_directories(caseFolder);
+    }
+
+    // data recording
+    std::ostringstream oss;
+    oss << caseFolder << "/CPU_Case" << case_id << "_" << name << ".txt";
+    std::string fileName = oss.str();
+    std::fstream outFile(fileName, std::ios::out);
+    for (int i = 2; i < nCellsX + 2; i++) {
+        for (int j = 2; j < nCellsY + 2; j++) {
+            outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
+            << ", " << u_prim[i][j][0] << ", " << u_prim[i][j][1] << ", " << u_prim[i][j][2] << ", " << u_prim[i][j][3]
+            << std::endl;
+        }
+    }
+    outFile.close();
+}
+
+
+void fluxRecordDebug(const std::vector<std::vector<std::array<double, 4>>>& flux, const int case_id, const double nCellsX,
+    const double nCellsY, const double x0, const double y0, const double dx, const double dy, std::string name) {
+
+    // check whether the directory exists, create one if not
+    std::ostringstream folderPath;
+    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/Debugging";
+    std::string caseFolder = folderPath.str();
+    if (!fs::exists(caseFolder)) {
+        fs::create_directories(caseFolder);
+    }
+
+    // data recording
+    std::ostringstream oss;
+    oss << caseFolder << "/CPU_Case" << case_id << "_" << name << ".txt";
+    std::string fileName = oss.str();
+    std::fstream outFile(fileName, std::ios::out);
+    for (int i = 2; i < nCellsX + 2; i++) {
+        for (int j = 2; j < nCellsY + 2; j++) {
+            outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
+            << ", " << flux[i][j][0] << ", " << flux[i][j][1] << ", " << flux[i][j][2] << ", " << flux[i][j][3]
+            << std::endl;
+        }
+    }
+    outFile.close();
+}
+
+
 int main() {
 
     // parameters
@@ -441,14 +543,14 @@ int main() {
         fluxY_SLIC.resize(nCellsX + 3, std::vector<std::array<double, 4>>(nCellsY + 3));
 
 
-        //************************************************************************************************************//
+        //***********************************************************************************************************//
         // compute time step
         double dt = computeTimeStep(u, C, dx, dy, gama);
         t = t + dt;
         std::cout << "ite = " << counter + 1 << ", time = " << t << std::endl;
 
 
-        //************************************************************************************************************//
+        //***********************************************************************************************************//
         // data reconstruction in x-direction
         for (int i = 2; i < nCellsX + 2; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
@@ -488,12 +590,15 @@ int main() {
             }
         }
 
+        dataRecordDebug(uTempPlus1, case_id, nCellsX, nCellsY, x0, y0, dx, dy, "Upt_u", gama);
+        assert(false);
+
         // transmissive boundary condition
         setBoundaryCondition(uTempPlus1, nCellsX, nCellsY);
         u = uTempPlus1;  // temporary result
 
 
-        //************************************************************************************************************//
+        //***********************************************************************************************************//
         // data reconstruction in y-direction
         for (int i = 2; i < nCellsX + 2; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
@@ -539,43 +644,12 @@ int main() {
         counter++;
 
 
-        //************************************************************************************************************//
+        //***********************************************************************************************************//
         // data recording
         if (t >= t_record_list[record_index]) {
             std::cout << "Recording: t = " << t << std::endl;
+            dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t, gama);
             record_index++;
-
-            // transform
-            std::vector<std::vector<std::array<double, 4>>> u_prim;
-            u_prim.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));
-            for (int i = 0; i < nCellsX + 4; i++) {
-                for (int j = 0; j < nCellsY + 4; j++) {
-                    u_prim[i][j] = cons2prim(u[i][j], gama);
-                }
-            }
-
-            // check whether the directory exists, create one if not
-            std::ostringstream folderPath;
-            folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/res/Case_" << case_id;
-            std::string caseFolder = folderPath.str();
-            if (!fs::exists(caseFolder)) {
-                fs::create_directories(caseFolder);
-            }
-
-            // data recording
-            std::ostringstream oss;
-            oss << caseFolder << "/T=" << std::setprecision(2) << t << ".txt";
-            std::string fileName = oss.str();
-            std::fstream outFile(fileName, std::ios::out);
-            for (int i = 2; i < nCellsX + 2; i++) {
-                for (int j = 2; j < nCellsY + 2; j++) {
-                    // std::cout << x0 + (i - 1) * dx << ", " << u[i][0] << ", " << u[i][1] << ", " << u[i][2] << std::endl;
-                    outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
-                    << ", " << u_prim[i][j][0] << ", " << u_prim[i][j][1] << ", " << u_prim[i][j][2] << ", " << u_prim[i][j][3]
-                    << std::endl;
-                }
-            }
-            outFile.close();
         }
 
     } while (t < tStop);

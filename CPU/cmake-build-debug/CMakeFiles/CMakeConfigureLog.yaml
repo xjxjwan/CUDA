@@ -109,8 +109,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-mf2s4c"
-      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-mf2s4c"
+      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-fdqjgh"
+      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-fdqjgh"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
       CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
@@ -119,11 +119,11 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-mf2s4c'
+        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-fdqjgh'
         
-        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_58cfd
-        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_58cfd.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_58cfd.dir\\ /FS -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_58cfd.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_58cfd.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_58cfd.exe /implib:cmTC_58cfd.lib /pdb:cmTC_58cfd.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_4d22c
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe  /nologo   /DWIN32 /D_WINDOWS  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_4d22c.dir\\CMakeCCompilerABI.c.obj /FdCMakeFiles\\cmTC_4d22c.dir\\ /FS -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCCompilerABI.c"
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_4d22c.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_4d22c.dir\\CMakeCCompilerABI.c.obj  /out:cmTC_4d22c.exe /implib:cmTC_4d22c.lib /pdb:cmTC_4d22c.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -
@@ -163,8 +163,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-sncmnc"
-      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-sncmnc"
+      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-82qhdb"
+      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-82qhdb"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
@@ -174,11 +174,11 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-sncmnc'
+        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-82qhdb'
         
-        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_91a53
-        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP   /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_91a53.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_91a53.dir\\ /FS -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_91a53.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_91a53.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_91a53.exe /implib:cmTC_91a53.lib /pdb:cmTC_91a53.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_0928b
+        [1/2] C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP   /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_0928b.dir\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_0928b.dir\\ /FS -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCXXCompilerABI.cpp"
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_0928b.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_0928b.dir\\CMakeCXXCompilerABI.cpp.obj  /out:cmTC_0928b.exe /implib:cmTC_0928b.lib /pdb:cmTC_0928b.pdb /version:0.0 /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
         
       exitCode: 0
   -

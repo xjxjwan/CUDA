@@ -24,8 +24,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../CPU/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/Visualize2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-01T16-59-29-0197.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-02T21-31-48-0946.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
@@ -40,14 +39,9 @@
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualize2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-239f1475e190a71034d1.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-01T16-21-58-0178.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-02T21-31-22-0769.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CUDA.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CUDA.bin" afterDir="false" />
@@ -55,23 +49,18 @@
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/embed.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/intermediate.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/manifest.rc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/manifest.res" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main.cu" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_1_Density_T=0.10s.png" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1_Density_T=0.10s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_1_Density_T=0.20s.png" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1_Density_T=0.20s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_1_Density_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1_Density_T=0.30s.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,6 +178,16 @@
       <workItem from="1740949423458" duration="1276000" />
       <workItem from="1740951069874" duration="36000" />
       <workItem from="1740951126728" duration="10000" />
+      <workItem from="1740951312465" duration="1542000" />
+      <workItem from="1740952923968" duration="14000" />
+      <workItem from="1740953837510" duration="1182000" />
+      <workItem from="1740956085385" duration="116000" />
+      <workItem from="1740956349735" duration="569000" />
+      <workItem from="1740957022528" duration="2064000" />
+      <workItem from="1740959363681" duration="234000" />
+      <workItem from="1740959677971" duration="2380000" />
+      <workItem from="1740962092662" duration="895000" />
+      <workItem from="1740963259319" duration="155000" />
     </task>
     <servers />
   </component>

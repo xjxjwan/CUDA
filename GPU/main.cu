@@ -171,7 +171,7 @@ __global__ void computeAmax(double* aDevice, Grid u) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
     int i_local = threadIdx.x, j_local = threadIdx.y;
-    double cur_v = 0.0;
+    double cur_a = 0.0;
 
     // calculate a's in current block
     if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
@@ -181,10 +181,12 @@ __global__ void computeAmax(double* aDevice, Grid u) {
             u_cons[v] = u(i, j, v);
         }
         cons2primDevice(u_prim, u_cons);
-        double cur_vx = u_prim[1], cur_vy = u_prim[2];
-        cur_v = pow(pow(cur_vx, 2) + pow(cur_vy, 2), 0.5);
+        double cur_rho = u_prim[0], cur_vx = u_prim[1], cur_vy = u_prim[2], cur_p = u_prim[3];
+        double cur_v = pow(pow(cur_vx, 2) + pow(cur_vy, 2), 0.5);
+        double Cs = pow(gamma * cur_p / cur_rho, 0.5);
+        cur_a = cur_v + Cs;
     }
-    aBlock[threadIdx.x][threadIdx.y] = cur_v;
+    aBlock[threadIdx.x][threadIdx.y] = cur_a;
     __syncthreads();
 
     // block-wise reduction
@@ -391,7 +393,7 @@ __global__ void calFlux(Grid flux, Grid uBar_backward, Grid uBar_forward, const 
     int j = blockIdx.y * blockDim.y + threadIdx.y;
     double unit_len = axis == 0 ? dx : dy;
 
-    if (i >= nGhost && i < uBar_forward.nCellsX + nGhost && j >= nGhost && j < uBar_forward.nCellsY + nGhost) {
+    if (i >= 0 && i < flux.nCellsX + 2 * nGhost && j >= 0 && j < flux.nCellsY + 2 * nGhost) {
         // get data
         double uf_cons[NUM_VARS]; double ub_cons[NUM_VARS];
         for (int v = 0; v < NUM_VARS; v++) {
@@ -446,23 +448,22 @@ __global__ void evolution(Grid u, Grid flux, const double dx, const double dy, c
         double F_momy_backward = axis == 0 ? flux(i - 1, j, 2) : flux(i, j - 1, 2);
         double F_E_backward = axis == 0 ? flux(i - 1, j, 3) : flux(i, j - 1, 3);
 
-        double cur_rho = u(i, j, 0);
-        double cur_momx = u(i, j, 1);
-        double cur_momy = u(i, j, 2);
-        double cur_E = u(i, j, 3);
-
-        u(i, j, 0) = cur_rho - dt / unit_len * (flux(i, j, 0) - F_rho_backward);
-        u(i, j, 1) = cur_momx - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
-        u(i, j, 2) = cur_momy - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
-        u(i, j, 3) = cur_E - dt / unit_len * (flux(i, j, 3) - F_E_backward);
+        u(i, j, 0) = u(i, j, 0) - dt / unit_len * (flux(i, j, 0) - F_rho_backward);
+        u(i, j, 1) = u(i, j, 1) - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
+        u(i, j, 2) = u(i, j, 2) - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
+        u(i, j, 3) = u(i, j, 3) - dt / unit_len * (flux(i, j, 3) - F_E_backward);
         __syncthreads();
     }
 }
 
 
 // function: data recording
-void dataRecord(Grid uHost, const int case_id, const double nCellsX, const double nCellsY,
+void dataRecord(Grid uHost, Grid u, const int case_id, const double nCellsX, const double nCellsY,
     const double x0, const double y0, const double dx, const double dy, const double t) {
+
+    // copy data from GPU to CPU
+    cudaMemcpy(uHost.data, u.data, (nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS * sizeof(double),
+        cudaMemcpyDeviceToHost);
 
     // check whether the directory exists, create one if not
     std::ostringstream folderPath;
@@ -489,7 +490,7 @@ void dataRecord(Grid uHost, const int case_id, const double nCellsX, const doubl
             cons2primHost(u_ij_prim, u_ij_cons);
 
             outFile << x0 + (i - nGhost + 0.5) * dx << ", " << y0 + (j - nGhost + 0.5) * dy
-            << ", " << u_ij_cons[0] << ", " << u_ij_cons[1] << ", " << u_ij_cons[2] << ", " << u_ij_cons[3]
+            << ", " << u_ij_prim[0] << ", " << u_ij_prim[1] << ", " << u_ij_prim[2] << ", " << u_ij_prim[3]
             << std::endl;
         }
     }
@@ -576,7 +577,7 @@ __global__ void initialize(Grid u, const double x0, const double y0, const doubl
 int main() {
 
     // parameters
-    int case_id = 1;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
+    int case_id = 2;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
     std::array<int, 2> nCellsX_list = {400, 500};
     std::array<int, 2> nCellsY_list = {400, 197};
     std::array<double, 2> x1_list = {1.0, 225.0};
@@ -697,14 +698,8 @@ int main() {
         // data recording
         if (t >= t_record_list[record_index]) {
             std::cout << "Recording: t = " << t << std::endl;
+            dataRecord(uHost, u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t);
             record_index++;
-
-            // copy data from GPU to CPU
-            cudaMemcpy(uHost.data, u.data, (nCellsX + 2 * nGhost) * (nCellsY + 2 * nGhost) * NUM_VARS * sizeof(double),
-                cudaMemcpyDeviceToHost);
-
-            // record
-            dataRecord(uHost, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t);
         }
 
     } while (t < tStop);
