@@ -267,26 +267,20 @@ __device__ double getLimiter(double r) {
 
 
 // function: reconstruct a single variable
-__device__ void singleCellReconstruct(double* u_backward_prim, double* u_forward_prim,
-    double* u0_prim, double* u_prim, double* u1_prim) {
+__device__ void singleVarReconstruct(double* res, double q0, double q, double q1) {
 
-    double q0 = 0.0, q = 0.0, q1 = 0.0;
-    for (int v = 0; v < NUM_VARS; v++) {
-        q0 = u0_prim[v]; q = u_prim[v]; q1 = u1_prim[v];
+    double r = (q - q0) / (q1 - q);
+    double slope_limiter = getLimiter(r);
+    // double slope_limiter = 0.0;
 
-        double r = (q - q0) / (q1 - q);
-        double slope_limiter = getLimiter(r);
-        // double slope_limiter = 0.0;
+    double delta_backward = q - q0;
+    double delta_forward = q1 - q;
+    double delta_i = 0.5 * (delta_backward + delta_forward);
 
-        double delta_backward = q - q0;
-        double delta_forward = q1 - q;
-        double delta_i = 0.5 * (delta_backward + delta_forward);
-
-        double qBarBackward = q - 0.5 * slope_limiter * delta_i;
-        double qBarForward = q + 0.5 * slope_limiter * delta_i;
-        u_backward_prim[v] = qBarBackward;
-        u_forward_prim[v] = qBarForward;
-    }
+    double qBarBackward = q - 0.5 * slope_limiter * delta_i;
+    double qBarForward = q + 0.5 * slope_limiter * delta_i;
+    res[0] = qBarBackward;
+    res[1] = qBarForward;
 }
 
 
@@ -299,7 +293,6 @@ __global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
 
     if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
         // get data
-        double u0_prim[NUM_VARS]; double u_prim[NUM_VARS]; double u1_prim[NUM_VARS];
         double u0_cons[NUM_VARS]; double u_cons[NUM_VARS]; double u1_cons[NUM_VARS];
         for (int v = 0; v < NUM_VARS; v++) {
             u0_cons[v] = axis == 0 ? u(i - 1, j, v) : u(i, j - 1, v);
@@ -307,22 +300,12 @@ __global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
             u1_cons[v] = axis == 0 ? u(i + 1, j, v) : u(i, j + 1, v);
         }
 
-        // transform from conservative to primitive
-        cons2primDevice(u0_prim, u0_cons);
-        cons2primDevice(u_prim, u_cons);
-        cons2primDevice(u1_prim, u1_cons);
-
-        // reconstruct in primitive form
-        double u_backward_prim[NUM_VARS]; double u_forward_prim[NUM_VARS];
-        double u_backward_cons[NUM_VARS]; double u_forward_cons[NUM_VARS];
-        singleCellReconstruct(u_backward_prim, u_forward_prim, u0_prim, u_prim, u1_prim);
-
-        // transform reconstructed data from primitive to conservative and store
-        prim2consDevice(u_backward_cons, u_backward_prim);
-        prim2consDevice(u_forward_cons, u_forward_prim);
+        // reconstruct and store
+        double res[2];
         for (int v = 0; v < NUM_VARS; v++) {
-            u_backward(i, j, v) = u_backward_cons[v];
-            u_forward(i, j, v) = u_forward_cons[v];
+            singleVarReconstruct(res, u0_cons[v], u_cons[v], u1_cons[v]);
+            u_backward(i, j, v) = res[0];
+            u_forward(i, j, v) = res[1];
         }
     }
 }

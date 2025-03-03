@@ -28,11 +28,19 @@
       <change beforePath="$PROJECT_DIR$/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualize2D.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main.cu" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_v1.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main_v1.cu" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/Case_2_Density_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2_Density_T=0.30s.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +169,8 @@
       <workItem from="1740962092662" duration="895000" />
       <workItem from="1740963259319" duration="155000" />
       <workItem from="1740963520226" duration="7000" />
-      <workItem from="1741021941171" duration="3279000" />
+      <workItem from="1741021941171" duration="4222000" />
+      <workItem from="1741026457431" duration="1000" />
     </task>
     <servers />
   </component>
