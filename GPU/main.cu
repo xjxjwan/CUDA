@@ -157,7 +157,6 @@ __global__ void setBoundaryCondition(Grid u) {
             u(i, j, v) = u(nCellsX + nGhost - 1, j, v);
         }
     }
-    __syncthreads();
 }
 
 
@@ -288,7 +287,6 @@ __device__ void singleCellReconstruct(double* u_backward_prim, double* u_forward
         u_backward_prim[v] = qBarBackward;
         u_forward_prim[v] = qBarForward;
     }
-    __syncthreads();
 }
 
 
@@ -326,7 +324,6 @@ __global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
             u_backward(i, j, v) = u_backward_cons[v];
             u_forward(i, j, v) = u_forward_cons[v];
         }
-        __syncthreads();
     }
 }
 
@@ -380,7 +377,6 @@ __global__ void halfTimeStepUpdate(Grid uBar_backward, Grid uBar_forward, Grid u
             uBar_backward(i, j, v) = ub_cons[v] - flux_update;
             uBar_forward(i, j, v) = uf_cons[v] - flux_update;
         }
-        __syncthreads();
     }
 }
 
@@ -429,7 +425,6 @@ __global__ void calFlux(Grid flux, Grid uBar_backward, Grid uBar_forward, const 
         flux(i, j, 1) = F_momx_FORCE;
         flux(i, j, 2) = F_momy_FORCE;
         flux(i, j, 3) = F_E_FORCE;
-        __syncthreads();
     }
 }
 
@@ -452,7 +447,6 @@ __global__ void evolution(Grid u, Grid flux, const double dx, const double dy, c
         u(i, j, 1) = u(i, j, 1) - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
         u(i, j, 2) = u(i, j, 2) - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
         u(i, j, 3) = u(i, j, 3) - dt / unit_len * (flux(i, j, 3) - F_E_backward);
-        __syncthreads();
     }
 }
 
