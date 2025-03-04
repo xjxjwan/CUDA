@@ -433,7 +433,7 @@ int main() {
     // parameters
     double C = 0.8;
     double gama = 1.4;
-    int case_id = 1;
+    int case_id = 2;
     int nCellsX = 0;
     int nCellsY = 0;
     double tStart = 0.0;
@@ -474,7 +474,7 @@ int main() {
 
     if (case_id == 2) { // Shock-bubble interaction
 
-        nCellsX = 500; nCellsY = 197;
+        nCellsX = 100; nCellsY = 40;
         x1 = 225; y1 = 89;
         double bubble_center_x = 35;
         double bubble_center_y = 0.5 * y1;
@@ -589,9 +589,6 @@ int main() {
                 }
             }
         }
-
-        dataRecordDebug(uTempPlus1, case_id, nCellsX, nCellsY, x0, y0, dx, dy, "Upt_u", gama);
-        assert(false);
 
         // transmissive boundary condition
         setBoundaryCondition(uTempPlus1, nCellsX, nCellsY);

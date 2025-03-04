@@ -251,8 +251,8 @@ events:
     checks:
       - "Detecting CUDA compiler ABI info"
     directories:
-      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-vbnho9"
-      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-vbnho9"
+      source: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0c8mdj"
+      binary: "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0c8mdj"
     cmakeVariables:
       CMAKE_CUDA_ARCHITECTURES: "52"
       CMAKE_CUDA_FLAGS: "-D_WINDOWS -Xcompiler=\" /EHsc\""
@@ -263,10 +263,10 @@ events:
       variable: "CMAKE_CUDA_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-vbnho9'
+        Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0c8mdj'
         
-        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_1c8e7
-        [1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od /RTC1" "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -Xcompiler=-MDd -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCUDACompilerABI.cu" -o CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_1c8e7.dir\\,-FS
+        Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_2b976
+        [1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od /RTC1" "--generate-code=arch=compute_52,code=[compute_52,sm_52]" -Xcompiler=-MDd -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCUDACompilerABI.cu" -o CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_2b976.dir\\,-FS
         cl: 命令行 warning D9002 :忽略未知选项“-v”
         CMakeCUDACompilerABI.cu
         cl: 命令行 warning D9002 :忽略未知选项“-v”
@@ -274,9 +274,9 @@ events:
         nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).
         CMakeCUDACompilerABI.cu
         cl: 命令行 warning D9002 :忽略未知选项“-v”
-        tmpxft_0000b82c_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp
+        tmpxft_00006e7c_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp
         E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCompilerCUDAArch.h(10): warning C4305: “return”: 从“int”到“bool”截断\x0d
-        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_1c8e7.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_1c8e7.exe /implib:cmTC_1c8e7.lib /pdb:cmTC_1c8e7.pdb /version:0.0 -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."
+        [2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_2b976.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_2b976.exe /implib:cmTC_2b976.lib /pdb:cmTC_2b976.pdb /version:0.0 -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."
         
       exitCode: 0
   -
@@ -300,10 +300,10 @@ events:
       Parsed CUDA implicit link information:
         link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
         linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
-        ignore line: [Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-vbnho9']
+        ignore line: [Change Dir: 'D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/cmake-build-debug/CMakeFiles/CMakeScratch/TryCompile-0c8mdj']
         ignore line: []
-        ignore line: [Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_1c8e7]
-        ignore line: [[1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od /RTC1" "--generate-code=arch=compute_52 code=[compute_52 sm_52]" -Xcompiler=-MDd -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCUDACompilerABI.cu" -o CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_1c8e7.dir\\ -FS]
+        ignore line: [Run Build Command(s): "E:/CLion/CLion 2024.2.2/bin/ninja/win/x64/ninja.exe" -v cmTC_2b976]
+        ignore line: [[1/2] C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.8\\bin\\nvcc.exe -forward-unknown-to-host-compiler   -D_WINDOWS -Xcompiler=" /EHsc"  -Xcompiler=" -Ob0 -Od /RTC1" "--generate-code=arch=compute_52 code=[compute_52 sm_52]" -Xcompiler=-MDd -Xcompiler=-Zi   -Xcompiler=-v -MD -MT CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj -MF CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj.d -x cu -c "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCUDACompilerABI.cu" -o CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj -Xcompiler=-FdCMakeFiles\\cmTC_2b976.dir\\ -FS]
         ignore line: [cl: 命令行 warning D9002 :忽略未知选项“-v”]
         ignore line: [CMakeCUDACompilerABI.cu]
         ignore line: [cl: 命令行 warning D9002 :忽略未知选项“-v”]
@@ -311,9 +311,9 @@ events:
         ignore line: [nvcc warning : Support for offline compilation for architectures prior to '<compute/sm/lto>_75' will be removed in a future release (Use -Wno-deprecated-gpu-targets to suppress warning).]
         ignore line: [CMakeCUDACompilerABI.cu]
         ignore line: [cl: 命令行 warning D9002 :忽略未知选项“-v”]
-        ignore line: [tmpxft_0000b82c_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp]
+        ignore line: [tmpxft_00006e7c_00000000-7_CMakeCUDACompilerABI.cudafe1.cpp]
         ignore line: [E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\share\\cmake-3.29\\Modules\\CMakeCompilerCUDAArch.h(10): warning C4305: “return”: 从“int”到“bool”截断\x0d]
-        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_1c8e7.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_1c8e7.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_1c8e7.exe /implib:cmTC_1c8e7.lib /pdb:cmTC_1c8e7.pdb /version:0.0 -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."]
+        ignore line: [[2/2] C:\\Windows\\system32\\cmd.exe /C "cd . && "E:\\CLion\\CLion 2024.2.2\\bin\\cmake\\win\\x64\\bin\\cmake.exe" -E vs_link_exe --intdir=CMakeFiles\\cmTC_2b976.dir --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100226~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~3\\2022\\COMMUN~1\\VC\\Tools\\MSVC\\1443~1.348\\bin\\Hostx64\\x64\\link.exe /nologo CMakeFiles\\cmTC_2b976.dir\\CMakeCUDACompilerABI.cu.obj  /out:cmTC_2b976.exe /implib:cmTC_2b976.lib /pdb:cmTC_2b976.pdb /version:0.0 -v /debug /INCREMENTAL  cudadevrt.lib  cudart_static.lib -LIBPATH:"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.8/lib/x64" && cd ."]
         ignore line: []
         ignore line: []
         linker tool for 'CUDA': C:/PROGRA~1/MICROS~3/2022/COMMUN~1/VC/Tools/MSVC/1443~1.348/bin/Hostx64/x64/link.exe

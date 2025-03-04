@@ -10,6 +10,7 @@
 #include <fstream>
 #include <cassert>
 #include <filesystem>
+#include <ctime>
 
 namespace fs = std::filesystem;
 
@@ -20,8 +21,10 @@ namespace fs = std::filesystem;
 #define gamma 1.4  // adiabatic index of ideal gas
 #define nThreadsX 32  // number of threads per block in x-direction
 #define nThreadsY 32  // number of threads per block in y-direction
-#define nThreadsXSLIC 6  // number of threads per block in x-direction in SLIC
-#define nThreadsYSLIC 6  // number of threads per block in y-direction in SLIC
+#define nThreadsXSLICX 32  // number of threads per block in x-direction for SLIC evolution in x-direction
+#define nThreadsYSLICX 4  // number of threads per block in y-direction for SLIC evolution in x-direction
+#define nThreadsXSLICY 4  // number of threads per block in x-direction for SLIC evolution in y-direction
+#define nThreadsYSLICY 32  // number of threads per block in y-direction for SLIC evolution in y-direction
 
 // macro: debugging
 #define CUDA_CHECK {\
@@ -266,54 +269,32 @@ __device__ double getLimiter(double r) {
 }
 
 
-// function: reconstruct a single variable
-__device__ void singleVarReconstruct(double* res, double q0, double q, double q1) {
+// function: data reconstruction for a single cell
+__device__ void dataReconstruct(double* u_backward, double* u_forward, double* u) {
 
-    double r = (q - q0) / (q1 - q);
-    double slope_limiter = getLimiter(r);
-    // double slope_limiter = 0.0;
+    for (int v = 0; v < NUM_VARS; v++) {
+        double q0 = u_backward[v], q = u[v], q1 = u_forward[v];
 
-    double delta_backward = q - q0;
-    double delta_forward = q1 - q;
-    double delta_i = 0.5 * (delta_backward + delta_forward);
+        double r = (q - q0) / (q1 - q);
+        double slope_limiter = getLimiter(r);
+        // double slope_limiter = 0.0;
 
-    double qBarBackward = q - 0.5 * slope_limiter * delta_i;
-    double qBarForward = q + 0.5 * slope_limiter * delta_i;
-    res[0] = qBarBackward;
-    res[1] = qBarForward;
-}
+        double delta_backward = q - q0;
+        double delta_forward = q1 - q;
+        double delta_i = 0.5 * (delta_backward + delta_forward);
 
+        double qBarBackward = q - 0.5 * slope_limiter * delta_i;
+        double qBarForward = q + 0.5 * slope_limiter * delta_i;
 
-// function: data reconstruction
-template<int axis>
-__global__ void dataReconstruct(Grid u_backward, Grid u_forward, Grid u) {
-
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-
-    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
-        // get data
-        double u0_cons[NUM_VARS]; double u_cons[NUM_VARS]; double u1_cons[NUM_VARS];
-        for (int v = 0; v < NUM_VARS; v++) {
-            u0_cons[v] = axis == 0 ? u(i - 1, j, v) : u(i, j - 1, v);
-            u_cons[v] = u(i, j, v);
-            u1_cons[v] = axis == 0 ? u(i + 1, j, v) : u(i, j + 1, v);
-        }
-
-        // reconstruct and store
-        double res[2];
-        for (int v = 0; v < NUM_VARS; v++) {
-            singleVarReconstruct(res, u0_cons[v], u_cons[v], u1_cons[v]);
-            u_backward(i, j, v) = res[0];
-            u_forward(i, j, v) = res[1];
-        }
+        u_backward[v] = qBarBackward;
+        u_forward[v] = qBarForward;
     }
 }
 
 
 // function: calculate flux functions
 template<int axis>
-__device__ void flux_func(double* flux, double* u_cons) {
+__device__ void flux_func(double* flux, const double* u_cons) {
 
     double u_prim[NUM_VARS];
     cons2primDevice(u_prim, u_cons);
@@ -334,102 +315,207 @@ __device__ void flux_func(double* flux, double* u_cons) {
 
 // function: half-time step update
 template<int axis>
-__global__ void halfTimeStepUpdate(Grid uBar_backward, Grid uBar_forward, Grid u_backward, Grid u_forward,
-    const double dx, const double dy, const double dt) {
+__device__ void halfTimeStepUpdate(double* u_backward, double* u_forward, const double dx, const double dy, const double dt) {
 
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    // calculate flux functions
+    double flux_f[NUM_VARS], flux_b[NUM_VARS];
+    flux_func<axis>(flux_b, u_backward);
+    flux_func<axis>(flux_f, u_forward);
+
+    // update
     double unit_len = axis == 0 ? dx : dy;
-
-    if (i >= 0 && i < u_forward.nCellsX + 2 * nGhost && j >= 0 && j < u_forward.nCellsY + 2 * nGhost) {
-        // get data
-        double uf_cons[NUM_VARS]; double ub_cons[NUM_VARS];
-        for (int v = 0; v < NUM_VARS; v++) {
-            uf_cons[v] = u_forward(i, j, v);
-            ub_cons[v] = u_backward(i, j, v);
-        }
-
-        // calculate flux functions
-        double flux_f[NUM_VARS], flux_b[NUM_VARS];
-        flux_func<axis>(flux_b, ub_cons);
-        flux_func<axis>(flux_f, uf_cons);
-
-        // update
-        for (int v = 0; v < NUM_VARS; v++) {
-            double flux_update = 0.5 * (dt / unit_len) * (flux_f[v] - flux_b[v]);
-            uBar_backward(i, j, v) = ub_cons[v] - flux_update;
-            uBar_forward(i, j, v) = uf_cons[v] - flux_update;
-        }
+    for (int v = 0; v < NUM_VARS; v++) {
+        double flux_update = 0.5 * (dt / unit_len) * (flux_f[v] - flux_b[v]);
+        u_backward[v] = u_backward[v] - flux_update;
+        u_forward[v] = u_forward[v] - flux_update;
     }
 }
 
 
 // function: calculate numerical fluxes with FORCE scheme
 template<int axis>
-__global__ void calFlux(Grid flux, Grid uBar_backward, Grid uBar_forward, const double dx, const double dy, const double dt) {
+__device__ void calFlux(double* flux, double* u_backward, double* u_forward, const double dx, const double dy, const double dt) {
 
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    // calculate flux functions
+    double flux_f[NUM_VARS], flux_b[NUM_VARS];
+    flux_func<axis>(flux_b, u_backward);
+    flux_func<axis>(flux_f, u_forward);
+
+    // L-F scheme
     double unit_len = axis == 0 ? dx : dy;
+    const double F_rho_LF = 0.5 * unit_len / dt * (u_backward[0] - u_forward[0]) + 0.5 * (flux_b[0] + flux_f[0]);
+    const double F_momx_LF = 0.5 * unit_len / dt * (u_backward[1] - u_forward[1]) + 0.5 * (flux_b[1] + flux_f[1]);
+    const double F_momy_LF = 0.5 * unit_len / dt * (u_backward[2] - u_forward[2]) + 0.5 * (flux_b[2] + flux_f[2]);
+    const double F_E_LF = 0.5 * unit_len / dt * (u_backward[3] - u_forward[3]) + 0.5 * (flux_b[3] + flux_f[3]);
 
-    if (i >= 0 && i < flux.nCellsX + 2 * nGhost && j >= 0 && j < flux.nCellsY + 2 * nGhost) {
-        // get data
-        double uf_cons[NUM_VARS]; double ub_cons[NUM_VARS];
+    // RI scheme
+    double u_half_cons[NUM_VARS]; double F_RI[NUM_VARS];
+    u_half_cons[0] = 0.5 * (u_backward[0] + u_forward[0]) - 0.5 * dt / unit_len * (flux_f[0] - flux_b[0]);
+    u_half_cons[1] = 0.5 * (u_backward[1] + u_forward[1]) - 0.5 * dt / unit_len * (flux_f[1] - flux_b[1]);
+    u_half_cons[2] = 0.5 * (u_backward[2] + u_forward[2]) - 0.5 * dt / unit_len * (flux_f[2] - flux_b[2]);
+    u_half_cons[3] = 0.5 * (u_backward[3] + u_forward[3]) - 0.5 * dt / unit_len * (flux_f[3] - flux_b[3]);
+    flux_func<axis>(F_RI, u_half_cons);
+
+    // FORCE scheme
+    const double F_rho_FORCE = 0.5 * (F_rho_LF + F_RI[0]);
+    const double F_momx_FORCE = 0.5 * (F_momx_LF + F_RI[1]);
+    const double F_momy_FORCE = 0.5 * (F_momy_LF + F_RI[2]);
+    const double F_E_FORCE = 0.5 * (F_E_LF + F_RI[3]);
+    flux[0] = F_rho_FORCE;
+    flux[1] = F_momx_FORCE;
+    flux[2] = F_momy_FORCE;
+    flux[3] = F_E_FORCE;
+}
+
+
+// function: SLIC evolution in a single kernel with shared memory optimization
+__global__ void SLIC_Evolution_X(Grid u, const double dx, const double dy, const double dt) {
+
+    // allocate shared memory
+    __shared__ double uL[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double uI[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double uR[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double flux[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+
+    // get coordinates
+    int i = blockIdx.x * blockDim.x + threadIdx.x - 2 * blockIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int i_local = threadIdx.x, j_local = threadIdx.y;
+    if (i_local >= nThreadsXSLICX || j_local >= nThreadsYSLICX) {assert(false);}
+
+    // data reconstruction and half-time update
+    int i_min = nGhost - 1;
+    int i_max = u.nCellsX + nGhost + 1;
+    int j_min = nGhost;
+    int j_max = u.nCellsY + nGhost;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
+
+        // read data from global memory
         for (int v = 0; v < NUM_VARS; v++) {
-            ub_cons[v] = uBar_forward(i, j, v);
-            uf_cons[v] = axis == 0 ? uBar_backward(i + 1, j, v) : uBar_backward(i, j + 1, v);
+            uI[i_local][j_local][v] = u(i, j, v);
+        }
+        __syncthreads();
+
+        // read uL and uR
+        for (int v = 0; v < NUM_VARS; v++) {
+            if (i_local == 0) {
+                uL[i_local][j_local][v] = u(i - 1, j, v);
+            } else {
+                uL[i_local][j_local][v] = uI[i_local - 1][j_local][v];
+            }
+            if (i_local == blockDim.x - 1) {
+                uR[i_local][j_local][v] = u(i + 1, j, v);
+            } else {
+                uR[i_local][j_local][v] = uI[i_local + 1][j_local][v];
+            }
         }
 
-        // calculate flux functions
-        double flux_f[NUM_VARS], flux_b[NUM_VARS];
-        flux_func<axis>(flux_b, ub_cons);
-        flux_func<axis>(flux_f, uf_cons);
+        // data reconstruction
+        dataReconstruct(uL[i_local][j_local], uR[i_local][j_local], uI[i_local][j_local]);
+        // half time-step update
+        halfTimeStepUpdate<0>(uL[i_local][j_local], uR[i_local][j_local], dx, dy, dt);
+        __syncthreads();
+    }
 
-        // L-F scheme
-        const double F_rho_LF = 0.5 * unit_len / dt * (ub_cons[0] - uf_cons[0]) + 0.5 * (flux_b[0] + flux_f[0]);
-        const double F_momx_LF = 0.5 * unit_len / dt * (ub_cons[1] - uf_cons[1]) + 0.5 * (flux_b[1] + flux_f[1]);
-        const double F_momy_LF = 0.5 * unit_len / dt * (ub_cons[2] - uf_cons[2]) + 0.5 * (flux_b[2] + flux_f[2]);
-        const double F_E_LF = 0.5 * unit_len / dt * (ub_cons[3] - uf_cons[3]) + 0.5 * (flux_b[3] + flux_f[3]);
+    // calculate fluxes
+    i_min = nGhost - 1;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
+        if (i_local < blockDim.x - 1) {
+            calFlux<0>(flux[i_local][j_local], uR[i_local][j_local], uL[i_local + 1][j_local], dx, dy, dt);
+        }
+        __syncthreads();
+    }
 
-        // RI scheme
-        double u_half_cons[NUM_VARS]; double F_RI[NUM_VARS];
-        u_half_cons[0] = 0.5 * (ub_cons[0] + uf_cons[0]) - 0.5 * dt / unit_len * (flux_f[0] - flux_b[0]);
-        u_half_cons[1] = 0.5 * (ub_cons[1] + uf_cons[1]) - 0.5 * dt / unit_len * (flux_f[1] - flux_b[1]);
-        u_half_cons[2] = 0.5 * (ub_cons[2] + uf_cons[2]) - 0.5 * dt / unit_len * (flux_f[2] - flux_b[2]);
-        u_half_cons[3] = 0.5 * (ub_cons[3] + uf_cons[3]) - 0.5 * dt / unit_len * (flux_f[3] - flux_b[3]);
-        flux_func<axis>(F_RI, u_half_cons);
-
-        // FORCE scheme
-        const double F_rho_FORCE = 0.5 * (F_rho_LF + F_RI[0]);
-        const double F_momx_FORCE = 0.5 * (F_momx_LF + F_RI[1]);
-        const double F_momy_FORCE = 0.5 * (F_momy_LF + F_RI[2]);
-        const double F_E_FORCE = 0.5 * (F_E_LF + F_RI[3]);
-        flux(i, j, 0) = F_rho_FORCE;
-        flux(i, j, 1) = F_momx_FORCE;
-        flux(i, j, 2) = F_momy_FORCE;
-        flux(i, j, 3) = F_E_FORCE;
+    // evolution by adding fluxes
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
+        if (i_local > 0 && i_local < blockDim.x - 1) {
+            for (int v = 0; v < NUM_VARS; v++) {
+                u(i, j, v) = u(i, j, v) - dt / dx * (flux[i_local][j_local][v] - flux[i_local - 1][j_local][v]);
+            }
+        }
+        __syncthreads();
     }
 }
 
 
-// function: numerical evolution
-template<int axis>
-__global__ void evolution(Grid u, Grid flux, const double dx, const double dy, const double dt) {
+__global__ void SLIC_Evolution_Y(Grid u, const double dx, const double dy, const double dt) {
 
+    // allocate shared memory
+    __shared__ double uL[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double uI[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double uR[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double flux[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+
+    // get coordinates
     int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-    double unit_len = axis == 0 ? dx : dy;
+    int j = blockIdx.y * blockDim.y + threadIdx.y - 2 * blockIdx.y;
+    int i_local = threadIdx.x, j_local = threadIdx.y;
 
-    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
-        double F_rho_backward = axis == 0 ? flux(i - 1, j, 0) : flux(i, j - 1, 0);
-        double F_momx_backward = axis == 0 ? flux(i - 1, j, 1) : flux(i, j - 1, 1);
-        double F_momy_backward = axis == 0 ? flux(i - 1, j, 2) : flux(i, j - 1, 2);
-        double F_E_backward = axis == 0 ? flux(i - 1, j, 3) : flux(i, j - 1, 3);
+    // data reconstruction and half-time update
+    int i_min = nGhost;
+    int i_max = u.nCellsX + nGhost;
+    int j_min = nGhost - 1;
+    int j_max = u.nCellsY + nGhost + 1;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
 
-        u(i, j, 0) = u(i, j, 0) - dt / unit_len * (flux(i, j, 0) - F_rho_backward);
-        u(i, j, 1) = u(i, j, 1) - dt / unit_len * (flux(i, j, 1) - F_momx_backward);
-        u(i, j, 2) = u(i, j, 2) - dt / unit_len * (flux(i, j, 2) - F_momy_backward);
-        u(i, j, 3) = u(i, j, 3) - dt / unit_len * (flux(i, j, 3) - F_E_backward);
+        // read data from global memory
+        for (int v = 0; v < NUM_VARS; v++) {
+            uI[i_local][j_local][v] = u(i, j, v);
+        }
+        __syncthreads();
+
+        // read uL and uR
+        for (int v = 0; v < NUM_VARS; v++) {
+            if (j_local == 0) {
+                uL[i_local][j_local][v] = u(i, j - 1, v);
+            } else {
+                uL[i_local][j_local][v] = uI[i_local][j_local - 1][v];
+            }
+            if (j_local == blockDim.y - 1) {
+                uR[i_local][j_local][v] = u(i, j + 1, v);
+            } else {
+                uR[i_local][j_local][v] = uI[i_local][j_local + 1][v];
+            }
+        }
+
+        // data reconstruction
+        dataReconstruct(uL[i_local][j_local], uR[i_local][j_local], uI[i_local][j_local]);
+        // half time-step update
+        halfTimeStepUpdate<1>(uL[i_local][j_local], uR[i_local][j_local], dx, dy, dt);
+        __syncthreads();
+    }
+
+    // calculate fluxes
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost - 1;
+    j_max = u.nCellsY + nGhost;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
+        if (j_local < blockDim.y - 1) {
+            calFlux<1>(flux[i_local][j_local], uR[i_local][j_local], uL[i_local][j_local + 1], dx, dy, dt);
+        }
+        __syncthreads();
+    }
+
+    // evolution by adding fluxes
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
+    if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
+        if (j_local > 0 && j_local < blockDim.y - 1) {
+            for (int v = 0; v < NUM_VARS; v++) {
+                u(i, j, v) = u(i, j, v) - dt / dy * (flux[i_local][j_local][v] - flux[i_local][j_local - 1][v]);
+            }
+        }
+        __syncthreads();
     }
 }
 
@@ -555,6 +641,7 @@ int main() {
 
     // parameters
     int case_id = 2;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
+    bool Record = false;  // whether record experimental data
     std::array<int, 2> nCellsX_list = {400, 500};
     std::array<int, 2> nCellsY_list = {400, 197};
     std::array<double, 2> x1_list = {1.0, 225.0};
@@ -572,10 +659,21 @@ int main() {
     dim3 dimBlock(nThreadsX, nThreadsY, 1);
     dim3 dimGrid(nBlocksX, nBlocksY, 1);
 
-    int nBlocksXSLIC = (nCellsX + 2 * nGhost + nThreadsXSLIC - 1) / nThreadsXSLIC;
-    int nBlocksYSLIC = (nCellsY + 2 * nGhost + nThreadsYSLIC - 1) / nThreadsYSLIC;
-    dim3 dimBlockSLIC(nThreadsXSLIC, nThreadsYSLIC, 1);
-    dim3 dimGridSLIC(nBlocksXSLIC, nBlocksYSLIC, 1);
+    // x-direction evolution with overlapping blocks
+    int nBlocksXSLICX = (nCellsX + 2 * nGhost - nThreadsXSLICX + nThreadsXSLICX - 3) / (nThreadsXSLICX - 2) + 1;
+    int nBlocksYSLICX = (nCellsY + 2 * nGhost + nThreadsYSLICX - 1) / nThreadsYSLICX;
+    dim3 dimBlockSLICX(nThreadsXSLICX, nThreadsYSLICX, 1);
+    dim3 dimGridSLICX(nBlocksXSLICX, nBlocksYSLICX, 1);
+
+    // y-direction evolution with overlapping blocks
+    int nBlocksXSLICY = (nCellsX + 2 * nGhost + nThreadsXSLICY - 1) / nThreadsXSLICY;
+    int nBlocksYSLICY = (nCellsY + 2 * nGhost - nThreadsYSLICY + nThreadsYSLICY - 3) / (nThreadsYSLICY - 2) + 1;
+    dim3 dimBlockSLICY(nThreadsXSLICY, nThreadsYSLICY, 1);
+    dim3 dimGridSLICY(nBlocksXSLICY, nBlocksYSLICY, 1);
+
+    // execution time recording
+    double elapsdt = 0, elapsx = 0, elapsy = 0, elapsbc = 0, elapstotal = 0;
+    clock_t startx, endx, starty, endy, startdt, enddt, startbc, endbc, start, end;
 
     // initialization
     Grid uHost(nCellsX, nCellsY, CPU);  // data on CPU for recording
@@ -587,93 +685,57 @@ int main() {
     setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
     CUDA_CHECK;
 
-    // intermediate data storage on GPU
-    // data reconstruction
-    Grid uL(nCellsX, nCellsY, GPU);
-    Grid uR(nCellsX, nCellsY, GPU);
-    Grid uU(nCellsX, nCellsY, GPU);
-    Grid uD(nCellsX, nCellsY, GPU);
-    // half-time step update
-    Grid uLBar(nCellsX, nCellsY, GPU);
-    Grid uRBar(nCellsX, nCellsY, GPU);
-    Grid uUBar(nCellsX, nCellsY, GPU);
-    Grid uDBar(nCellsX, nCellsY, GPU);
-    // numerical fluxes
-    Grid fluxX(nCellsX - 1, nCellsY - 1, GPU);
-    Grid fluxY(nCellsX - 1, nCellsY - 1, GPU);
-
     // update data
     double t = tStart;
-    std::array t_record_list = {0.1, 0.2, 0.3};
+    std::array<double, 3> t_record_list = {0.1, 0.2, 0.3};
     int record_index = 0;
     int counter = 0;
     do {
+        start = clock();
+
         // compute time step
+        startdt = clock();
         double dt = computeTimeStep(u, dx, dy, dimGrid, dimBlock);
+        enddt = clock();
+        elapsdt += (double)(enddt - startdt) / CLOCKS_PER_SEC;
+
         t = t + dt;
         counter++;
         std::cout << "ite = " << counter<< ", time = " << t << std::endl;
 
-
-        //***********************************************************************************************************//
-        // data reconstruction in x-direction
-        dataReconstruct<0><<<dimGridSLIC, dimBlockSLIC>>>(uL, uR, u);
+        // x-direction evolution
+        startx = clock();
+        SLIC_Evolution_X<<<dimGridSLICX, dimBlockSLICX>>>(u, dx, dy, dt);
         CUDA_CHECK;
-
-        // boundary conditions
-        setBoundaryCondition<<<dimGrid, dimBlock>>>(uL);
-        CUDA_CHECK;
-        setBoundaryCondition<<<dimGrid, dimBlock>>>(uR);
-        CUDA_CHECK;
-
-        // half-time step update in x-direction
-        halfTimeStepUpdate<0><<<dimGridSLIC, dimBlockSLIC>>>(uLBar, uRBar, uL, uR, dx, dy, dt);
-        CUDA_CHECK;
-
-        // evolution in x-direction with FORCE scheme
-        calFlux<0><<<dimGridSLIC, dimBlockSLIC>>>(fluxX, uLBar, uRBar, dx, dy, dt);
-        CUDA_CHECK;
-
-        // numerical evolution in x-direction
-        evolution<0><<<dimGridSLIC, dimBlockSLIC>>>(u, fluxX, dx, dy, dt);
-        CUDA_CHECK;
+        endx = clock();
+        elapsx += (double)(endx - startx) / CLOCKS_PER_SEC;
 
         // boundary conditions
+        startbc = clock();
         setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
         CUDA_CHECK;
+        endbc = clock();
+        elapsbc += (double)(endbc - startbc) / CLOCKS_PER_SEC;
 
-
-        //***********************************************************************************************************//
-        // data reconstruction in y-direction
-        dataReconstruct<1><<<dimGridSLIC, dimBlockSLIC>>>(uD, uU, u);
+        // y-direction evolution
+        starty = clock();
+        SLIC_Evolution_Y<<<dimGridSLICY, dimBlockSLICY>>>(u, dx, dy, dt);
         CUDA_CHECK;
+        endy = clock();
+        elapsy += (double)(endy - starty) / CLOCKS_PER_SEC;
 
         // boundary conditions
-        setBoundaryCondition<<<dimGrid, dimBlock>>>(uD);
-        CUDA_CHECK;
-        setBoundaryCondition<<<dimGrid, dimBlock>>>(uU);
-        CUDA_CHECK;
-
-        // half-time step update in x-direction
-        halfTimeStepUpdate<1><<<dimGridSLIC, dimBlockSLIC>>>(uDBar, uUBar, uD, uU, dx, dy, dt);
-        CUDA_CHECK;
-
-        // evolution in y-direction with FORCE scheme
-        calFlux<1><<<dimGridSLIC, dimBlockSLIC>>>(fluxY, uDBar, uUBar, dx, dy, dt);
-        CUDA_CHECK;
-
-        // numerical evolution in y-direction
-        evolution<1><<<dimGridSLIC, dimBlockSLIC>>>(u, fluxY, dx, dy, dt);
-        CUDA_CHECK;
-
-        // boundary conditions
+        startbc = clock();
         setBoundaryCondition<<<dimGrid, dimBlock>>>(u);
         CUDA_CHECK;
+        endbc = clock();
+        elapsbc += (double)(endbc - startbc) / CLOCKS_PER_SEC;
 
+        end = clock();
+        elapstotal += (double)(end - start) / CLOCKS_PER_SEC;
 
-        //***********************************************************************************************************//
         // data recording
-        if (t >= t_record_list[record_index]) {
+        if (Record && t >= t_record_list[record_index]) {
             std::cout << "Recording: t = " << t << std::endl;
             dataRecord(uHost, u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t);
             record_index++;
@@ -681,13 +743,17 @@ int main() {
 
     } while (t < tStop);
 
-    // release GPU memory
+    // release memory
     cudaFree(u.data);
-    cudaFree(uL.data); cudaFree(uR.data);
-    cudaFree(uD.data); cudaFree(uU.data);
-    cudaFree(uLBar.data); cudaFree(uRBar.data);
-    cudaFree(uDBar.data); cudaFree(uUBar.data);
-    cudaFree(fluxX.data); cudaFree(fluxY.data);
+    delete[] uHost.data;
+
+    // output time recording
+    std::cout << "=== Timing Results ===" << std::endl;
+    std::cout << "Total execution time: " << elapstotal << " sec" << std::endl;
+    std::cout << "computeTimeStep: " << elapsdt << " sec" << std::endl;
+    std::cout << "Boundary Conditions: " << elapsbc << " sec" << std::endl;
+    std::cout << "X-direction evolution: " << elapsx << " sec" << std::endl;
+    std::cout << "Y-direction evolution: " << elapsy << " sec" << std::endl;
 
     return 0;
 }
