@@ -98,6 +98,9 @@ def visualize_single(cur_ax, var_id, t, animating = False):
     x_ticks = np.linspace(x0, x1, 11).round(1)
     y_ticks = np.linspace(y0, y1, 11).round(1)
     y_ticks = np.flipud(y_ticks)
+    if case_id == 2:
+        x_ticks = (x_ticks * 0.001).round(3)
+        y_ticks = (y_ticks * 0.001).round(3)
     
     # visualization
     cur_ax.cla()

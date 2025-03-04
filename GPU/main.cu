@@ -163,8 +163,8 @@ __global__ void setBoundaryCondition(Grid u) {
 }
 
 
-// function: calculate the maximum velocity in the whole grid on GPU
-__global__ void computeAmax(double* aDevice, Grid u) {
+// function: calculate the maximum velocity in each block on GPU
+__global__ void computeAmaxOpt(double* aDevice, Grid u) {
 
     // shared memory for current block
     __shared__ double aBlock[nThreadsX][nThreadsY];
@@ -225,15 +225,49 @@ __global__ void computeAmax(double* aDevice, Grid u) {
 }
 
 
-// function: calculate time step
-double computeTimeStep(const Grid& u, const double& dx, const double& dy, const dim3& dimGrid, const dim3& dimBlock) {
+// function: calculate the velocity in each cell on GPU
+__global__ void computeAmax(double* aDevice, Grid u) {
 
-    // calculate a_max on GPU
+    // variable substitution
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    double cur_a = 0.0;
+
+    // calculate a
+    if (i >= nGhost && i < u.nCellsX + nGhost && j >= nGhost && j < u.nCellsY + nGhost) {
+        double u_prim[NUM_VARS];
+        double u_cons[NUM_VARS];
+        for (int v = 0; v < NUM_VARS; v++) {
+            u_cons[v] = u(i, j, v);
+        }
+        cons2primDevice(u_prim, u_cons);
+        double cur_rho = u_prim[0], cur_vx = u_prim[1], cur_vy = u_prim[2], cur_p = u_prim[3];
+        double cur_v = pow(pow(cur_vx, 2) + pow(cur_vy, 2), 0.5);
+        double Cs = pow(gamma * cur_p / cur_rho, 0.5);
+        cur_a = cur_v + Cs;
+    }
+
+    aDevice[j * blockDim.x * gridDim.x + i] = cur_a;
+}
+
+
+// function: calculate time step
+double computeTimeStep(Grid u, const double& dx, const double& dy, const dim3& dimGrid, const dim3& dimBlock, bool optTime) {
+
+    // calculate a's on GPU
     double* aDevice;
-    int a_size = dimGrid.x * dimGrid.y;
-    cudaMalloc(&aDevice, a_size * sizeof(double));
-    computeAmax<<<dimGrid, dimBlock>>>(aDevice, u);
-    CUDA_CHECK;
+    int a_size = 0;
+    if (optTime) {  // with shared memory optimization
+        a_size = dimGrid.x * dimGrid.y;
+        cudaMalloc(&aDevice, a_size * sizeof(double));
+        computeAmaxOpt<<<dimGrid, dimBlock>>>(aDevice, u);
+        CUDA_CHECK;
+    } else {  // without shared memory optimization
+        a_size = dimGrid.x * dimGrid.y * dimBlock.x * dimBlock.y;
+        cudaMalloc(&aDevice, a_size * sizeof(double));
+        computeAmax<<<dimGrid, dimBlock>>>(aDevice, u);
+        CUDA_CHECK;
+    }
 
     // transfer data to CPU
     double* aHost = new double [a_size];
@@ -636,12 +670,48 @@ __global__ void initialize(Grid u, const double x0, const double y0, const doubl
 }
 
 
+// function: check memory usage
+void checkKernelAttributes() {
+    cudaFuncAttributes attr;
+
+    cudaFuncGetAttributes(&attr, computeAmaxOpt);
+    std::cout << "=== Kernel Resource Usage: computeAmaxOpt ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+
+    cudaFuncGetAttributes(&attr, SLIC_Evolution_X);
+    std::cout << "=== Kernel Resource Usage: SLIC_Evolution_X ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+
+    cudaFuncGetAttributes(&attr, SLIC_Evolution_Y);
+    std::cout << "=== Kernel Resource Usage: SLIC_Evolution_Y ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+}
+
+
 // function: mainloop
 int main() {
 
-    // parameters
+    // experimental options
     int case_id = 2;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
     bool Record = false;  // whether record experimental data
+    bool optTime = true;  // whether optimize dt calculation with shared memory
+
+    // parameters
     std::array<int, 2> nCellsX_list = {400, 500};
     std::array<int, 2> nCellsY_list = {400, 197};
     std::array<double, 2> x1_list = {1.0, 225.0};
@@ -692,16 +762,18 @@ int main() {
     int counter = 0;
     do {
         start = clock();
+        // check memory usage
+        if (counter == 0) {checkKernelAttributes();}
 
         // compute time step
         startdt = clock();
-        double dt = computeTimeStep(u, dx, dy, dimGrid, dimBlock);
+        double dt = computeTimeStep(u, dx, dy, dimGrid, dimBlock, optTime);
         enddt = clock();
         elapsdt += (double)(enddt - startdt) / CLOCKS_PER_SEC;
 
         t = t + dt;
         counter++;
-        std::cout << "ite = " << counter<< ", time = " << t << std::endl;
+        // std::cout << "ite = " << counter<< ", time = " << t << std::endl;
 
         // x-direction evolution
         startx = clock();
