@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <string>
 #include <filesystem>
+#include <ctime>
 
 namespace fs = std::filesystem;
 
@@ -412,10 +413,13 @@ void fluxRecordDebug(const std::vector<std::vector<std::array<double, 4>>>& flux
 
 int main() {
 
+    // experimental options
+    int case_id = 2;
+    bool Record = true;
+
     // parameters
     double C = 0.8;
     double gama = 1.4;
-    int case_id = 1;
     int nCellsX = 0;
     int nCellsY = 0;
     double tStart = 0.0;
@@ -490,12 +494,19 @@ int main() {
     // boundary condition
     setBoundaryCondition(u, nCellsX, nCellsY);
 
+    // execution time recording
+    double elapsdt = 0, elapsx = 0, elapsy = 0, elapsbc = 0, elapstotal = 0;
+    clock_t startx, endx, starty, endy, startdt, enddt, startbc, endbc, start, end;
+
     // update data
     double t = tStart;
     std::array t_record_list = {0.1, 0.2, 0.3};
     int record_index = 0;
     int counter = 0;
     do {
+
+        start = clock();
+
         // data storage
         std::vector<std::vector<std::array<double, 4>>> uBarL;
         uBarL.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));
@@ -527,12 +538,17 @@ int main() {
 
         //***********************************************************************************************************//
         // compute time step
+        startdt = clock();
         double dt = computeTimeStep(u, C, dx, dy, gama);
+        enddt = clock();
+        elapsdt += (double)(enddt - startdt) / CLOCKS_PER_SEC;
+
         t = t + dt;
         std::cout << "ite = " << counter + 1 << ", time = " << t << std::endl;
 
 
         //***********************************************************************************************************//
+        startx = clock();
         // data reconstruction in x-direction
         for (int i = 1; i < nCellsX + 3; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
@@ -568,12 +584,20 @@ int main() {
             }
         }
 
+        endx = clock();
+        elapsx += (double)(endx - startx) / CLOCKS_PER_SEC;
+
         // transmissive boundary condition
+        startbc = clock();
         setBoundaryCondition(uTempPlus1, nCellsX, nCellsY);
+        endbc = clock();
+        elapsbc += (double)(endbc - startbc) / CLOCKS_PER_SEC;
+
         u = uTempPlus1;  // temporary result
 
 
         //***********************************************************************************************************//
+        starty = clock();
         // data reconstruction in y-direction
         for (int i = 2; i < nCellsX + 2; i++) {
             for (int j = 1; j < nCellsY + 3; j++) {
@@ -609,21 +633,39 @@ int main() {
             }
         }
 
+        endy = clock();
+        elapsy += (double)(endy - starty) / CLOCKS_PER_SEC;
+
         // transmissive boundary condition
+        startbc = clock();
         setBoundaryCondition(uPlus1, nCellsX, nCellsY);
+        endbc = clock();
+        elapsbc += (double)(endbc - startbc) / CLOCKS_PER_SEC;
+
         u = uPlus1;  // final result for this update-loop
         counter++;
+
+        end = clock();
+        elapstotal += (double)(end - start) / CLOCKS_PER_SEC;
 
 
         //***********************************************************************************************************//
         // data recording
-        if (t >= t_record_list[record_index]) {
+        if (Record && t >= t_record_list[record_index]) {
             std::cout << "Recording: t = " << t << std::endl;
             dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t, gama);
             record_index++;
         }
 
     } while (t < tStop);
+
+    // output time recording
+    std::cout << "=== Timing Results ===" << std::endl;
+    std::cout << "Total execution time: " << elapstotal << " sec" << std::endl;
+    std::cout << "computeTimeStep: " << elapsdt << " sec" << std::endl;
+    std::cout << "Boundary Conditions: " << elapsbc << " sec" << std::endl;
+    std::cout << "X-direction evolution: " << elapsx << " sec" << std::endl;
+    std::cout << "Y-direction evolution: " << elapsy << " sec" << std::endl;
 
     return 0;
 }

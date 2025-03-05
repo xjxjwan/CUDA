@@ -13,18 +13,18 @@ import os
 case_id = 1
 var_id = 0  # var_id: 0-Density, 1-Velocity, 2-Pressure, 3-Energy
 t = 0.3
-gama = 1.4
+gamma = 1.4
 
-if case_id in [1]:
+if case_id == 1:  # Qudrant Test
     x0, x1 = 0.0, 1.0
     y0, y1 = 0.0, 1.0
     fig_len_x = 7.5
     fig_len_y = 6
     nCellsX, nCellsY = 400, 400
 
-if case_id in [2]:
-    x0, x1 = 0.0, 225
-    y0, y1 = 0.0, 89
+if case_id == 2:  # Shock-Bubble Test
+    x0, x1 = 0.0, 0.225
+    y0, y1 = 0.0, 0.089
     fig_len_x = 18
     fig_len_y = 6
     nCellsX, nCellsY = 500, 197
@@ -90,17 +90,20 @@ def visualize_single(cur_ax, var_id, t, animating = False):
         if cur_rho == 0:
             E[row, col] = 0.0
         else:
-            E[row, col] = cur_p / (gama - 1) / cur_rho
+            E[row, col] = cur_p / (gamma - 1) / cur_rho
 
     data_list = [rho, v, p, E]
 
     # Define the actual coordinate values for ticks
-    x_ticks = np.linspace(x0, x1, 11).round(1)
-    y_ticks = np.linspace(y0, y1, 11).round(1)
-    y_ticks = np.flipud(y_ticks)
+    if case_id == 1:
+        x_ticks = np.linspace(x0, x1, 11).round(1)
+        y_ticks = np.linspace(y0, y1, 11).round(1)
+        y_ticks = np.flipud(y_ticks)
+
     if case_id == 2:
-        x_ticks = (x_ticks * 0.001).round(3)
-        y_ticks = (y_ticks * 0.001).round(3)
+        x_ticks = np.linspace(x0, x1, 11).round(3)
+        y_ticks = np.linspace(y0, y1, 11).round(3)
+        y_ticks = np.flipud(y_ticks)
     
     # visualization
     cur_ax.cla()
@@ -111,7 +114,7 @@ def visualize_single(cur_ax, var_id, t, animating = False):
         fig.subplots_adjust(left=0.1, right=0.8, bottom=0.1, top=0.95)
         plt.pause(0.01)
     else:
-        cur_ax.set_title(label_list[var_id] + ", Time = %.2fs" % t)
+        cur_ax.set_title(label_list[var_id] + ", Time = %.1f" % t)
         cur_ax.set_xlabel('X')
         cur_ax.set_ylabel('Y')
 
@@ -120,12 +123,12 @@ def visualize_single(cur_ax, var_id, t, animating = False):
         ytick_positions = np.linspace(0, nCellsY, 11)
 
         cur_ax.set_xticks(xtick_positions)
-        cur_ax.set_xticklabels(x_ticks)
+        cur_ax.set_xticklabels(x_ticks, rotation = 0)
 
         cur_ax.set_yticks(ytick_positions)
         cur_ax.set_yticklabels(y_ticks)
 
-        plt.savefig("res/Case_%d_%s_T=%.2fs.png" % (case_id, label_list[var_id], t))
+        plt.savefig("res/Case_%d_%s_T=%.1f.png" % (case_id, label_list[var_id], t))
         plt.show()
 
 
