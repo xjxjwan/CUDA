@@ -24,12 +24,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cache-v2-a7380d47bc85d586d0ab.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-7f30b28fb876461e7e15.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-1fa9b29b205bb62591f2.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-03T19-40-44-0291.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/target-CPU-Debug-b4740ea9bff901b55c74.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-3fe8f634ef32addbf9ee.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/Visualize2D.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cache-v2-13c2a96c5066387748e3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-e54786069aec34433299.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-8975ae048af1122f8935.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-04T21-12-20-0726.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/target-CPU-Debug-a0129445876fff4abc1a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-33e2246963a2b8acca6e.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeCache.txt" afterDir="false" />
@@ -38,53 +39,94 @@
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdC/a.exe" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCXX/a.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdC/CMakeCCompilerId.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdC/CMakeCCompilerId.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCXX/CMakeCXXCompilerId.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCXX/CMakeCXXCompilerId.obj" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/main.cpp.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/CXXDependInfo.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/ShowIncludes/foo.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/ShowIncludes/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/ShowIncludes/main.obj" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/rules.ninja" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/build.ninja" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1/T=0.3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Density_T=0.10s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Density_T=0.20s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Density_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1_Density_T=0.30s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Internal Energy_T=0.10s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Internal Energy_T=0.20s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Internal Energy_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1_Internal Energy_T=0.30s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Pressure_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1_Pressure_T=0.30s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Velocity_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_1_Velocity_T=0.30s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.1.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_2/T=0.3.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Density_T=0.10s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Density_T=0.20s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Pressure_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Velocity_T=0.30s.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code Versions.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualize2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cache-v2-6fa28759da932eaae33c.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/cmakeFiles-v1-a2520b0ecee77cb0f6f3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/codemodel-v2-f79d83072614967df025.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/index-2025-03-03T19-43-21-0709.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/target-GPU-Debug-b4ed3d4583d1e66b351e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-b08d5bae28d6ec9dea4b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CMakeCUDACompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CMakeDetermineCompilerABI_CUDA.bin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CMakeRCCompiler.cmake" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/a.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/a.exp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/a.lib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp1.ii" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp1.ii.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp4.ii" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cpp4.ii.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.gpu" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.cudafe1.stub.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.fatbin.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.module_id" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.obj.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.ptx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/CMakeCUDACompilerId.sm_52.cubin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a.exe.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.fatbin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.fatbin.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.obj.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.reg.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.sm_52.cubin" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.29.6/CompilerIdCUDA/tmp/a_dlink.sm_52.cubin.optf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/cmake_device_link.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/embed.manifest" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/intermediate.manifest" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/main.cu.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/manifest.rc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/manifest.res" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/GPU.dir/vc140.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ShowIncludes/foo.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ShowIncludes/main.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/rules.ninja" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_debug.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_v1.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_v2.cu" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2/T=0.3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2_Density_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_2_Density_T=0.30s.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1_Density_T=0.10s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1_Density_T=0.20s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_1_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2_Density_T=0.10s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2_Density_T=0.20s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_v1/Case_2_Density_T=0.30s.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,6 +262,9 @@
       <workItem from="1741107388811" duration="12928000" />
       <workItem from="1741122759915" duration="6272000" />
       <workItem from="1741132303486" duration="18000" />
+      <workItem from="1741132359693" duration="60000" />
+      <workItem from="1741133335481" duration="17000" />
+      <workItem from="1741137264929" duration="5000" />
     </task>
     <servers />
   </component>

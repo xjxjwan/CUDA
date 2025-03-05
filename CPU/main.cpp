@@ -102,50 +102,32 @@ double getLimiter(const double& r) {
 }
 
 
-std::array<double, 2> singleVarReconstruct(const double& q_i0, const double& q_i, const double& q_i1) {
-
-    double r = (q_i - q_i0) / (q_i1 - q_i);
-    double slope_limiter = getLimiter(r);
-    // double slope_limiter = 0.0;
-
-    double delta_left = q_i - q_i0;
-    double delta_right = q_i1 - q_i;
-    double delta_i = 0.5 * (delta_left + delta_right);
-
-    double qBarBackward = q_i - 0.5 * slope_limiter * delta_i;
-    double qBarForward = q_i + 0.5 * slope_limiter * delta_i;
-    std::array<double, 2> res = {qBarBackward, qBarForward};
-    return res;
-}
-
-
 std::vector<std::array<double, 4>> dataReconstruct(std::array<double, 4> const& u_i0, std::array<double, 4> const& u_i,
-    std::array<double, 4> const& u_i1, const double gama) {
+    std::array<double, 4> const& u_i1) {
 
-    std::array<double, 4> uBarBackward_prim{};
-    std::array<double, 4> uBarForward_prim{};
-
-    std::array<double, 4> u_i0_prim = cons2prim(u_i0, gama);
-    std::array<double, 4> u_i_prim = cons2prim(u_i, gama);
-    std::array<double, 4> u_i1_prim = cons2prim(u_i1, gama);
+    std::array<double, 4> uBarBackward{};
+    std::array<double, 4> uBarForward{};
 
     for (int k = 0; k < 4; k++) {
 
-        const double q_i0 = u_i0_prim[k];
-        const double q_i = u_i_prim[k];
-        const double q_i1 = u_i1_prim[k];
+        const double q_i0 = u_i0[k];
+        const double q_i = u_i[k];
+        const double q_i1 = u_i1[k];
+        double r = (q_i - q_i0) / (q_i1 - q_i);
+        double slope_limiter = getLimiter(r);
+        // double slope_limiter = 0.0;
 
-        std::array<double, 2> qBar = singleVarReconstruct(q_i0, q_i, q_i1);
-        uBarBackward_prim[k] = qBar[0];
-        uBarForward_prim[k] = qBar[1];
+        double delta_left = q_i - q_i0;
+        double delta_right = q_i1 - q_i;
+        double delta_i = 0.5 * (delta_left + delta_right);
+
+        uBarBackward[k] = q_i - 0.5 * slope_limiter * delta_i;
+        uBarForward[k] = q_i + 0.5 * slope_limiter * delta_i;
     }
 
-    std::array<double, 4> uBarBackward_cons = prim2cons(uBarBackward_prim, gama);
-    std::array<double, 4> uBarForward_cons = prim2cons(uBarForward_prim, gama);
-
     std::vector<std::array<double, 4>> res{};
-    res.push_back(uBarBackward_cons);
-    res.push_back(uBarForward_cons);
+    res.push_back(uBarBackward);
+    res.push_back(uBarForward);
     return res;
 }
 
@@ -433,7 +415,7 @@ int main() {
     // parameters
     double C = 0.8;
     double gama = 1.4;
-    int case_id = 2;
+    int case_id = 1;
     int nCellsX = 0;
     int nCellsY = 0;
     double tStart = 0.0;
@@ -474,7 +456,7 @@ int main() {
 
     if (case_id == 2) { // Shock-bubble interaction
 
-        nCellsX = 100; nCellsY = 40;
+        nCellsX = 500; nCellsY = 197;
         x1 = 225; y1 = 89;
         double bubble_center_x = 35;
         double bubble_center_y = 0.5 * y1;
@@ -552,22 +534,18 @@ int main() {
 
         //***********************************************************************************************************//
         // data reconstruction in x-direction
-        for (int i = 2; i < nCellsX + 2; i++) {
+        for (int i = 1; i < nCellsX + 3; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
                 // reconstruct x-direction
-                std::vector<std::array<double, 4>> uBarX_ij = dataReconstruct(u[i - 1][j], u[i][j], u[i + 1][j], gama);
+                std::vector<std::array<double, 4>> uBarX_ij = dataReconstruct(u[i - 1][j], u[i][j], u[i + 1][j]);
                 uBarL[i][j] = uBarX_ij[0];
                 uBarR[i][j] = uBarX_ij[1];
             }
         }
 
-        // boundary condition
-        setBoundaryCondition(uBarL, nCellsX, nCellsY);
-        setBoundaryCondition(uBarR, nCellsX, nCellsY);
-
         // half-time-step update in x-direction
-        for (int i = 0; i < nCellsX + 4; i++) {
-            for (int j = 0; j < nCellsY + 4; j++) {
+        for (int i = 1; i < nCellsX + 3; i++) {
+            for (int j = 2; j < nCellsY + 2; j++) {
                 std::vector<std::array<double, 4>> uBarUpdateX_ij = halfTimeStepUpdateX(uBarL[i][j], uBarR[i][j], dx, dt, gama);
                 uBarLUpdate[i][j] = uBarUpdateX_ij[0];
                 uBarRUpdate[i][j] = uBarUpdateX_ij[1];
@@ -575,8 +553,8 @@ int main() {
         }
 
         // calculate boundary fluxes in x-direction
-        for (int i = 0; i < nCellsX + 3; i++) {
-            for (int j = 0; j < nCellsY + 3; j++) {
+        for (int i = 1; i < nCellsX + 2; i++) {
+            for (int j = 2; j < nCellsY + 2; j++) {
                 fluxX_SLIC[i][j] = getFluxX(uBarRUpdate[i][j], uBarLUpdate[i + 1][j], dx, dt, gama);
             }
         }
@@ -598,21 +576,17 @@ int main() {
         //***********************************************************************************************************//
         // data reconstruction in y-direction
         for (int i = 2; i < nCellsX + 2; i++) {
-            for (int j = 2; j < nCellsY + 2; j++) {
+            for (int j = 1; j < nCellsY + 3; j++) {
                 // reconstruct y-direction
-                std::vector<std::array<double, 4>> uBarY_ij = dataReconstruct(u[i][j - 1], u[i][j], u[i][j + 1], gama);
+                std::vector<std::array<double, 4>> uBarY_ij = dataReconstruct(u[i][j - 1], u[i][j], u[i][j + 1]);
                 uBarD[i][j] = uBarY_ij[0];
                 uBarU[i][j] = uBarY_ij[1];
             }
         }
 
-        // transmissive boundary condition
-        setBoundaryCondition(uBarD, nCellsX, nCellsY);
-        setBoundaryCondition(uBarU, nCellsX, nCellsY);
-
         // half-time-step update in y-direction
-        for (int i = 0; i < nCellsX + 4; i++) {
-            for (int j = 0; j < nCellsY + 4; j++) {
+        for (int i = 2; i < nCellsX + 2; i++) {
+            for (int j = 1; j < nCellsY + 3; j++) {
                 std::vector<std::array<double, 4>> uBarUpdateY_ij = halfTimeStepUpdateY(uBarD[i][j], uBarU[i][j], dy, dt, gama);
                 uBarDUpdate[i][j] = uBarUpdateY_ij[0];
                 uBarUUpdate[i][j] = uBarUpdateY_ij[1];
@@ -620,8 +594,8 @@ int main() {
         }
 
         // calculate boundary fluxes in y-direction
-        for (int i = 0; i < nCellsX + 3; i++) {
-            for (int j = 0; j < nCellsY + 3; j++) {
+        for (int i = 2; i < nCellsX + 2; i++) {
+            for (int j = 1; j < nCellsY + 2; j++) {
                 fluxY_SLIC[i][j] = getFluxY(uBarUUpdate[i][j], uBarDUpdate[i][j + 1], dy, dt, gama);
             }
         }
