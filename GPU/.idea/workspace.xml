@@ -24,65 +24,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/../CPU/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/.idea/editor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/Visualize2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/main.cpp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CMakeFiles/CPU.dir/main.cpp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/CPU.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Density_T=0.30s.png" beforeDir="false" afterPath="$PROJECT_DIR$/../CPU/res/Case_2_Density_T=0.30s.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Density_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Internal Energy_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Pressure_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_1_Velocity_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Density_T=0.30s.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CPU/res/Case_2_Internal Energy_T=0.30s.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualize2D.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualize2D.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeConfigureLog.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-Debug-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.ilk" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/GPU.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/build.ninja" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/build.ninja" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cu" beforeDir="false" afterPath="$PROJECT_DIR$/main.cu" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/res/Case_1/T=0.3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_1_Velocity_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/Case_2_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1_Internal Energy_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1_Pressure_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_1_Velocity_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2_Internal Energy_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2_Pressure_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_complete_res/Case_2_Velocity_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1_Density_T=0.10s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1_Density_T=0.20s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_1_Density_T=0.30s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2/T=0.1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2/T=0.2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2/T=0.3.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2_Density_T=0.10s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2_Density_T=0.20s.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/main_multi_kernel_res/Case_2_Density_T=0.30s.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +177,7 @@
       <workItem from="1741184362010" duration="47000" />
       <workItem from="1741184788263" duration="6000" />
       <workItem from="1741185872403" duration="7749000" />
-      <workItem from="1741212896596" duration="4106000" />
+      <workItem from="1741212896596" duration="4512000" />
     </task>
     <servers />
   </component>

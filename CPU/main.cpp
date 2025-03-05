@@ -419,7 +419,7 @@ int main() {
 
     // parameters
     double C = 0.8;
-    double gama = 1.4;
+    double gamma = 1.4;
     int nCellsX = 0;
     int nCellsY = 0;
     double tStart = 0.0;
@@ -427,6 +427,7 @@ int main() {
     double x0 = 0.0, y0 = 0.0;
     double x1 = 0.0, y1 = 0.0;
     double dx = 0.0, dy = 0.0;
+    double time_ratio = 1.0;
     std::vector<std::vector<std::array<double, 4>>> u{};
 
     // initial data
@@ -453,7 +454,7 @@ int main() {
                 if (x >= 0.5 && y < 0.5) {u_ij = {0.5325, 0.0, 1.206, 0.3};}
 
                 // transform from primitive to conservative
-                u[i][j] = prim2cons(u_ij, gama);
+                u[i][j] = prim2cons(u_ij, gamma);
             }
         }
     }
@@ -461,12 +462,16 @@ int main() {
     if (case_id == 2) { // Shock-bubble interaction
 
         nCellsX = 500; nCellsY = 197;
-        x1 = 225; y1 = 89;
-        double bubble_center_x = 35;
-        double bubble_center_y = 0.5 * y1;
+        x1 = 0.225; y1 = 0.089;
+        double bubble_center_x = 0.035;
+        double bubble_center_y = 0.0445;
         dx = (x1 - x0) / nCellsX;
         dy = (y1 - y0) / nCellsY;
-        tStop = 0.3;
+        double bubble_radius = 0.025;
+        double Ms = 1.22, p_Air = 101325.0, rho_Air = 1.29;
+        double Cs_Air = pow(gamma * p_Air / rho_Air, 0.5);
+        time_ratio = bubble_radius / (Cs_Air * Ms);
+        tStop = 7.8 * time_ratio;
         u.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));  // 4 ghost cells
 
         for (int i = 2; i < nCellsX + 2; i++) {
@@ -477,16 +482,16 @@ int main() {
                 double y = y0 + (j - 1.5) * dy;
                 std::array<double, 4> u_ij{};
 
-                if (x < 5) {  // air left to shock
+                if (x < 0.005) {  // air left to shock
                     u_ij = {1.7755, 110.63, 0.0, 159060.0};
-                } else if (pow(pow(x - bubble_center_x, 2) + pow(y - bubble_center_y, 2), 0.5) <= 25) {  // inside bubble
+                } else if (pow(pow(x - bubble_center_x, 2) + pow(y - bubble_center_y, 2), 0.5) <= bubble_radius) {  // inside bubble
                     u_ij = {0.214, 0.0, 0.0, 101325.0};
                 } else {  // air right to shock
                     u_ij = {1.29, 0.0, 0.0, 101325.0};
                 }
 
                 // transform from primitive to conservative
-                u[i][j] = prim2cons(u_ij, gama);
+                u[i][j] = prim2cons(u_ij, gamma);
             }
         }
     }
@@ -500,8 +505,6 @@ int main() {
 
     // update data
     double t = tStart;
-    std::array t_record_list = {0.1, 0.2, 0.3};
-    int record_index = 0;
     int counter = 0;
     do {
 
@@ -539,7 +542,7 @@ int main() {
         //***********************************************************************************************************//
         // compute time step
         startdt = clock();
-        double dt = computeTimeStep(u, C, dx, dy, gama);
+        double dt = computeTimeStep(u, C, dx, dy, gamma);
         enddt = clock();
         elapsdt += (double)(enddt - startdt) / CLOCKS_PER_SEC;
 
@@ -562,7 +565,7 @@ int main() {
         // half-time-step update in x-direction
         for (int i = 1; i < nCellsX + 3; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
-                std::vector<std::array<double, 4>> uBarUpdateX_ij = halfTimeStepUpdateX(uBarL[i][j], uBarR[i][j], dx, dt, gama);
+                std::vector<std::array<double, 4>> uBarUpdateX_ij = halfTimeStepUpdateX(uBarL[i][j], uBarR[i][j], dx, dt, gamma);
                 uBarLUpdate[i][j] = uBarUpdateX_ij[0];
                 uBarRUpdate[i][j] = uBarUpdateX_ij[1];
             }
@@ -571,7 +574,7 @@ int main() {
         // calculate boundary fluxes in x-direction
         for (int i = 1; i < nCellsX + 2; i++) {
             for (int j = 2; j < nCellsY + 2; j++) {
-                fluxX_SLIC[i][j] = getFluxX(uBarRUpdate[i][j], uBarLUpdate[i + 1][j], dx, dt, gama);
+                fluxX_SLIC[i][j] = getFluxX(uBarRUpdate[i][j], uBarLUpdate[i + 1][j], dx, dt, gamma);
             }
         }
 
@@ -611,7 +614,7 @@ int main() {
         // half-time-step update in y-direction
         for (int i = 2; i < nCellsX + 2; i++) {
             for (int j = 1; j < nCellsY + 3; j++) {
-                std::vector<std::array<double, 4>> uBarUpdateY_ij = halfTimeStepUpdateY(uBarD[i][j], uBarU[i][j], dy, dt, gama);
+                std::vector<std::array<double, 4>> uBarUpdateY_ij = halfTimeStepUpdateY(uBarD[i][j], uBarU[i][j], dy, dt, gamma);
                 uBarDUpdate[i][j] = uBarUpdateY_ij[0];
                 uBarUUpdate[i][j] = uBarUpdateY_ij[1];
             }
@@ -620,7 +623,7 @@ int main() {
         // calculate boundary fluxes in y-direction
         for (int i = 2; i < nCellsX + 2; i++) {
             for (int j = 1; j < nCellsY + 2; j++) {
-                fluxY_SLIC[i][j] = getFluxY(uBarUUpdate[i][j], uBarDUpdate[i][j + 1], dy, dt, gama);
+                fluxY_SLIC[i][j] = getFluxY(uBarUUpdate[i][j], uBarDUpdate[i][j + 1], dy, dt, gamma);
             }
         }
 
@@ -648,16 +651,13 @@ int main() {
         end = clock();
         elapstotal += (double)(end - start) / CLOCKS_PER_SEC;
 
-
-        //***********************************************************************************************************//
-        // data recording
-        if (Record && t >= t_record_list[record_index]) {
-            std::cout << "Recording: t = " << t << std::endl;
-            dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t, gama);
-            record_index++;
-        }
-
     } while (t < tStop);
+
+    // data recording
+    if (Record) {
+        std::cout << "Recording: t = " << t << std::endl;
+        dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t, gamma);
+    }
 
     // output time recording
     std::cout << "=== Timing Results ===" << std::endl;
