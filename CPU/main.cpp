@@ -415,7 +415,7 @@ int main() {
 
     // experimental options
     int case_id = 2;
-    bool Record = true;
+    bool Record = false;
 
     // parameters
     double C = 0.8;
@@ -427,7 +427,7 @@ int main() {
     double x0 = 0.0, y0 = 0.0;
     double x1 = 0.0, y1 = 0.0;
     double dx = 0.0, dy = 0.0;
-    double time_ratio = 1.0;
+    double time_ratio = 1.0;  // used for unscaling time in case 2
     std::vector<std::vector<std::array<double, 4>>> u{};
 
     // initial data
@@ -471,7 +471,7 @@ int main() {
         double Ms = 1.22, p_Air = 101325.0, rho_Air = 1.29;
         double Cs_Air = pow(gamma * p_Air / rho_Air, 0.5);
         time_ratio = bubble_radius / (Cs_Air * Ms);
-        tStop = 7.8 * time_ratio;
+        tStop = 19 * time_ratio;
         u.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));  // 4 ghost cells
 
         for (int i = 2; i < nCellsX + 2; i++) {
@@ -505,6 +505,9 @@ int main() {
 
     // update data
     double t = tStart;
+    // std::array record_list = {0.1, 0.2, 0.3};
+    std::array record_list = {0.6, 1.2, 1.8, 3.0, 4.6, 6.2, 7.8, 9.4, 12.6, 17.4, 19.0};
+    int record_index = 0;
     int counter = 0;
     do {
 
@@ -651,13 +654,14 @@ int main() {
         end = clock();
         elapstotal += (double)(end - start) / CLOCKS_PER_SEC;
 
-    } while (t < tStop);
+        // data recording
+        if (Record && t / time_ratio >= record_list[record_index]) {
+            std::cout << "Recording: t = " << t << std::endl;
+            dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t / time_ratio, gamma);
+            record_index++;
+        }
 
-    // data recording
-    if (Record) {
-        std::cout << "Recording: t = " << t << std::endl;
-        dataRecord(u, case_id, nCellsX, nCellsY, x0, y0, dx, dy, t, gamma);
-    }
+    } while (t < tStop);
 
     // output time recording
     std::cout << "=== Timing Results ===" << std::endl;
