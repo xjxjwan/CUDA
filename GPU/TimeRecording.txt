@@ -1,0 +1,85 @@
+================================================================
+Case 1:
+
+100*100
+=== Timing Results ===
+Total execution time: 0.028074 sec
+computeTimeStep: 0.013163 sec
+Boundary Conditions: 0.001146 sec
+X-direction evolution: 0.007818 sec
+Y-direction evolution: 0.005431 sec
+
+200*200
+=== Timing Results ===
+Total execution time: 0.095907 sec
+computeTimeStep: 0.028452 sec
+Boundary Conditions: 0.002419 sec
+X-direction evolution: 0.033572 sec
+Y-direction evolution: 0.030566 sec
+
+300*300
+=== Timing Results ===
+Total execution time: 0.303737 sec
+computeTimeStep: 0.072408 sec
+Boundary Conditions: 0.003835 sec
+X-direction evolution: 0.119168 sec
+Y-direction evolution: 0.106566 sec
+
+400*400
+=== Timing Results ===
+Total execution time: 0.612551 sec
+computeTimeStep: 0.145536 sec
+Boundary Conditions: 0.005717 sec
+X-direction evolution: 0.236663 sec
+Y-direction evolution: 0.222197 sec
+
+500*500
+=== Timing Results ===
+Total execution time: 1.03039 sec
+computeTimeStep: 0.185341 sec
+Boundary Conditions: 0.00757 sec
+X-direction evolution: 0.423003 sec
+Y-direction evolution: 0.411459 sec
+
+================================================================
+Case 2:
+
+100*39
+=== Timing Results ===
+Total execution time: 0.074335 sec
+computeTimeStep: 0.036142 sec
+Boundary Conditions: 0.003299 sec
+X-direction evolution: 0.018155 sec
+Y-direction evolution: 0.01552 sec
+
+200*79
+=== Timing Results ===
+Total execution time: 0.202565 sec
+computeTimeStep: 0.079617 sec
+Boundary Conditions: 0.006979 sec
+X-direction evolution: 0.06221 sec
+Y-direction evolution: 0.051287 sec
+
+300*118
+=== Timing Results ===
+Total execution time: 0.411002 sec
+computeTimeStep: 0.123543 sec
+Boundary Conditions: 0.011248 sec
+X-direction evolution: 0.139709 sec
+Y-direction evolution: 0.133044 sec
+
+400*158
+=== Timing Results ===
+Total execution time: 0.749835 sec
+computeTimeStep: 0.165468 sec
+Boundary Conditions: 0.01511 sec
+X-direction evolution: 0.298771 sec
+Y-direction evolution: 0.265842 sec
+
+500*197
+=== Timing Results ===
+Total execution time: 1.4465 sec
+computeTimeStep: 0.330397 sec
+Boundary Conditions: 0.018439 sec
+X-direction evolution: 0.564219 sec
+Y-direction evolution: 0.531157 sec

@@ -403,15 +403,19 @@ __device__ void calFlux(double* flux, double* u_backward, double* u_forward, con
 
 
 // function: SLIC evolution in a single kernel with shared memory optimization
-__global__ void SLIC_Preparation_X(Grid uBarL, Grid uBarR, Grid u, const double dx, const double dy, const double dt) {
+__global__ void SLIC_Evolution_X(Grid u, const double dx, const double dy, const double dt) {
 
-    double uL[NUM_VARS];
-    double uI[NUM_VARS];
-    double uR[NUM_VARS];
+    // allocate shared memory
+    __shared__ double uL[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double uI[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double uR[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
+    __shared__ double flux[nThreadsXSLICX][nThreadsYSLICX][NUM_VARS];
 
     // get coordinates
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    int i = blockIdx.x * blockDim.x + threadIdx.x - 2 * blockIdx.x;
     int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int i_local = threadIdx.x, j_local = threadIdx.y;
+    if (i_local >= nThreadsXSLICX || j_local >= nThreadsYSLICX) {assert(false);}
 
     // data reconstruction and half-time update
     int i_min = nGhost - 1;
@@ -422,84 +426,71 @@ __global__ void SLIC_Preparation_X(Grid uBarL, Grid uBarR, Grid u, const double 
 
         // read data from global memory
         for (int v = 0; v < NUM_VARS; v++) {
-            uI[v] = u(i, j, v);
-            uL[v] = u(i - 1, j, v);
-            uR[v] = u(i + 1, j, v);
+            uI[i_local][j_local][v] = u(i, j, v);
+        }
+        __syncthreads();
+
+        // read uL and uR
+        for (int v = 0; v < NUM_VARS; v++) {
+            if (i_local == 0) {
+                uL[i_local][j_local][v] = u(i - 1, j, v);
+            } else {
+                uL[i_local][j_local][v] = uI[i_local - 1][j_local][v];
+            }
+            if (i_local == blockDim.x - 1) {
+                uR[i_local][j_local][v] = u(i + 1, j, v);
+            } else {
+                uR[i_local][j_local][v] = uI[i_local + 1][j_local][v];
+            }
         }
 
         // data reconstruction
-        dataReconstruct(uL, uR, uI);
+        dataReconstruct(uL[i_local][j_local], uR[i_local][j_local], uI[i_local][j_local]);
         // half time-step update
-        halfTimeStepUpdate<0>(uL, uR, dx, dy, dt);
-
-        // store updated data
-        for (int v = 0; v < NUM_VARS; v++) {
-            uBarL(i, j, v) = uL[v];
-            uBarR(i, j, v) = uR[v];
-        }
-    }
-}
-
-
-__global__ void SLIC_CalFlux_X(Grid Flux, Grid uBarL, Grid uBarR, const double dx, const double dy, const double dt) {
-
-    double cur_flux[NUM_VARS];
-    double uL[NUM_VARS];
-    double uR[NUM_VARS];
-
-    // get coordinates
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-
-    // get data
-    for (int v = 0; v < NUM_VARS; v++) {
-        uL[v] = uBarR(i, j, v);
-        uR[v] = uBarL(i + 1, j, v);
+        halfTimeStepUpdate<0>(uL[i_local][j_local], uR[i_local][j_local], dx, dy, dt);
+        __syncthreads();
     }
 
     // calculate fluxes
-    int i_min = nGhost - 1;
-    int i_max = uBarL.nCellsX + nGhost;
-    int j_min = nGhost;
-    int j_max = uBarL.nCellsY + nGhost;
+    i_min = nGhost - 1;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
     if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
-        calFlux<0>(cur_flux, uL, uR, dx, dy, dt);
-        // store fluxes
-        for (int v = 0; v < NUM_VARS; v++) {
-            Flux(i, j, v) = cur_flux[v];
+        if (i_local < blockDim.x - 1) {
+            calFlux<0>(flux[i_local][j_local], uR[i_local][j_local], uL[i_local + 1][j_local], dx, dy, dt);
         }
+        __syncthreads();
     }
-}
-
-
-__global__ void SLIC_Update_X(Grid u, Grid Flux, const double dx, const double dt) {
-
-    // get coordinates
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     // evolution by adding fluxes
-    int i_min = nGhost;
-    int i_max = u.nCellsX + nGhost;
-    int j_min = nGhost;
-    int j_max = u.nCellsY + nGhost;
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
     if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
-        for (int v = 0; v < NUM_VARS; v++) {
-            u(i, j, v) = u(i, j, v) - dt / dx * (Flux(i, j, v) - Flux(i - 1, j, v));
+        if (i_local > 0 && i_local < blockDim.x - 1) {
+            for (int v = 0; v < NUM_VARS; v++) {
+                u(i, j, v) = u(i, j, v) - dt / dx * (flux[i_local][j_local][v] - flux[i_local - 1][j_local][v]);
+            }
         }
+        __syncthreads();
     }
 }
 
 
-__global__ void SLIC_Preparation_Y(Grid uBarL, Grid uBarR, Grid u, const double dx, const double dy, const double dt) {
+__global__ void SLIC_Evolution_Y(Grid u, const double dx, const double dy, const double dt) {
 
-    double uL[NUM_VARS];
-    double uI[NUM_VARS];
-    double uR[NUM_VARS];
+    // allocate shared memory
+    __shared__ double uL[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double uI[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double uR[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
+    __shared__ double flux[nThreadsXSLICY][nThreadsYSLICY][NUM_VARS];
 
     // get coordinates
     int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
+    int j = blockIdx.y * blockDim.y + threadIdx.y - 2 * blockIdx.y;
+    int i_local = threadIdx.x, j_local = threadIdx.y;
 
     // data reconstruction and half-time update
     int i_min = nGhost;
@@ -510,71 +501,55 @@ __global__ void SLIC_Preparation_Y(Grid uBarL, Grid uBarR, Grid u, const double 
 
         // read data from global memory
         for (int v = 0; v < NUM_VARS; v++) {
-            uI[v] = u(i, j, v);
-            uL[v] = u(i, j - 1, v);
-            uR[v] = u(i, j + 1, v);
+            uI[i_local][j_local][v] = u(i, j, v);
+        }
+        __syncthreads();
+
+        // read uL and uR
+        for (int v = 0; v < NUM_VARS; v++) {
+            if (j_local == 0) {
+                uL[i_local][j_local][v] = u(i, j - 1, v);
+            } else {
+                uL[i_local][j_local][v] = uI[i_local][j_local - 1][v];
+            }
+            if (j_local == blockDim.y - 1) {
+                uR[i_local][j_local][v] = u(i, j + 1, v);
+            } else {
+                uR[i_local][j_local][v] = uI[i_local][j_local + 1][v];
+            }
         }
 
         // data reconstruction
-        dataReconstruct(uL, uR, uI);
+        dataReconstruct(uL[i_local][j_local], uR[i_local][j_local], uI[i_local][j_local]);
         // half time-step update
-        halfTimeStepUpdate<1>(uL, uR, dx, dy, dt);
-
-        // store updated data
-        for (int v = 0; v < NUM_VARS; v++) {
-            uBarL(i, j, v) = uL[v];
-            uBarR(i, j, v) = uR[v];
-        }
-    }
-}
-
-
-__global__ void SLIC_CalFlux_Y(Grid Flux, Grid uBarL, Grid uBarR, const double dx, const double dy, const double dt) {
-
-    double cur_flux[NUM_VARS];
-    double uL[NUM_VARS];
-    double uR[NUM_VARS];
-
-    // get coordinates
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
-
-    // get data
-    for (int v = 0; v < NUM_VARS; v++) {
-        uL[v] = uBarR(i, j, v);
-        uR[v] = uBarL(i, j + 1, v);
+        halfTimeStepUpdate<1>(uL[i_local][j_local], uR[i_local][j_local], dx, dy, dt);
+        __syncthreads();
     }
 
     // calculate fluxes
-    int i_min = nGhost;
-    int i_max = uBarL.nCellsX + nGhost;
-    int j_min = nGhost - 1;
-    int j_max = uBarL.nCellsY + nGhost;
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost - 1;
+    j_max = u.nCellsY + nGhost;
     if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
-        calFlux<1>(cur_flux, uL, uR, dx, dy, dt);
-        // store fluxes
-        for (int v = 0; v < NUM_VARS; v++) {
-            Flux(i, j, v) = cur_flux[v];
+        if (j_local < blockDim.y - 1) {
+            calFlux<1>(flux[i_local][j_local], uR[i_local][j_local], uL[i_local][j_local + 1], dx, dy, dt);
         }
+        __syncthreads();
     }
-}
-
-
-__global__ void SLIC_Update_Y(Grid u, Grid Flux, const double dy, const double dt) {
-
-    // get coordinates
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    int j = blockIdx.y * blockDim.y + threadIdx.y;
 
     // evolution by adding fluxes
-    int i_min = nGhost;
-    int i_max = u.nCellsX + nGhost;
-    int j_min = nGhost;
-    int j_max = u.nCellsY + nGhost;
+    i_min = nGhost;
+    i_max = u.nCellsX + nGhost;
+    j_min = nGhost;
+    j_max = u.nCellsY + nGhost;
     if (i >= i_min && i < i_max && j >= j_min && j < j_max) {
-        for (int v = 0; v < NUM_VARS; v++) {
-            u(i, j, v) = u(i, j, v) - dt / dy * (Flux(i, j, v) - Flux(i, j - 1, v));
+        if (j_local > 0 && j_local < blockDim.y - 1) {
+            for (int v = 0; v < NUM_VARS; v++) {
+                u(i, j, v) = u(i, j, v) - dt / dy * (flux[i_local][j_local][v] - flux[i_local][j_local - 1][v]);
+            }
         }
+        __syncthreads();
     }
 }
 
@@ -621,8 +596,8 @@ void dataRecord(Grid uHost, Grid u, const int case_id, const double nCellsX, con
 
 
 // function: initialization
-__global__ void initialize(Grid u, const double x0, const double y0, const double dx, const double dy, const int case_id,
-    const double bubble_center_x, const double bubble_center_y, const double bubble_radius) {
+__global__ void initialize(Grid u, const double x0, const double y0, const double dx, const double dy,
+    const int case_id, const double bubble_center_x, double bubble_center_y, double bubble_radius) {
 
     // get coordinates
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -692,10 +667,43 @@ __global__ void initialize(Grid u, const double x0, const double y0, const doubl
 }
 
 
+// function: check memory usage
+void checkKernelAttributes() {
+    cudaFuncAttributes attr;
+
+    cudaFuncGetAttributes(&attr, computeAmaxOpt);
+    std::cout << "=== Kernel Resource Usage: computeAmaxOpt ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+
+    cudaFuncGetAttributes(&attr, SLIC_Evolution_X);
+    std::cout << "=== Kernel Resource Usage: SLIC_Evolution_X ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+
+    cudaFuncGetAttributes(&attr, SLIC_Evolution_Y);
+    std::cout << "=== Kernel Resource Usage: SLIC_Evolution_Y ===" << std::endl;
+    std::cout << "Registers used: " << attr.numRegs << std::endl;
+    std::cout << "Shared memory per block: " << attr.sharedSizeBytes << " bytes" << std::endl;
+    std::cout << "Constant memory used: " << attr.constSizeBytes << " bytes" << std::endl;
+    std::cout << "Local memory per thread: " << attr.localSizeBytes << " bytes" << std::endl;
+    std::cout << "Max threads per block: " << attr.maxThreadsPerBlock << std::endl;
+    std::cout << std::endl;
+}
+
+
 // function: mainloop
 int main() {
 
-    // parameters
+    // experimental options
     int case_id = 2;  // Case 1: Quadrant problem; Case 2: Shock-Bubble interaction
     bool Record = false;  // whether record experimental data
     bool optTime = true;  // whether optimize dt calculation with shared memory
@@ -703,7 +711,9 @@ int main() {
     double Ms = 1.22, p_Air = 101325.0, rho_Air = 1.29;
     double Cs_Air = pow(gamma * p_Air / rho_Air, 0.5);
     double time_ratio = bubble_radius / (Cs_Air * Ms);
+    if (case_id == 1) {time_ratio = 1;}
 
+    // parameters
     std::array<int, 2> nCellsX_list = {400, 500};
     std::array<int, 2> nCellsY_list = {400, 197};
     std::array<double, 2> x1_list = {1.0, 0.225};
@@ -716,21 +726,20 @@ int main() {
     double dx = (x1 - x0) / nCellsX, dy = (y1 - y0) / nCellsY;
     double tStop = tStop_list[case_id - 1];
 
-    // initialization and boundary conditions
     int nBlocksX = (nCellsX + 2 * nGhost + nThreadsX - 1) / nThreadsX;
     int nBlocksY = (nCellsY + 2 * nGhost + nThreadsY - 1) / nThreadsY;
     dim3 dimBlock(nThreadsX, nThreadsY, 1);
     dim3 dimGrid(nBlocksX, nBlocksY, 1);
 
-    // x-direction evolution (without overlapping)
-    int nBlocksXSLICX = (nCellsX + 2 * nGhost + nThreadsXSLICX - 1) / nThreadsXSLICX;
+    // x-direction evolution with overlapping blocks
+    int nBlocksXSLICX = (nCellsX + 2 * nGhost - nThreadsXSLICX + nThreadsXSLICX - 3) / (nThreadsXSLICX - 2) + 1;
     int nBlocksYSLICX = (nCellsY + 2 * nGhost + nThreadsYSLICX - 1) / nThreadsYSLICX;
     dim3 dimBlockSLICX(nThreadsXSLICX, nThreadsYSLICX, 1);
     dim3 dimGridSLICX(nBlocksXSLICX, nBlocksYSLICX, 1);
 
-    // y-direction evolution (without overlapping)
+    // y-direction evolution with overlapping blocks
     int nBlocksXSLICY = (nCellsX + 2 * nGhost + nThreadsXSLICY - 1) / nThreadsXSLICY;
-    int nBlocksYSLICY = (nCellsY + 2 * nGhost + nThreadsYSLICY - 1) / nThreadsYSLICY;
+    int nBlocksYSLICY = (nCellsY + 2 * nGhost - nThreadsYSLICY + nThreadsYSLICY - 3) / (nThreadsYSLICY - 2) + 1;
     dim3 dimBlockSLICY(nThreadsXSLICY, nThreadsYSLICY, 1);
     dim3 dimGridSLICY(nBlocksXSLICY, nBlocksYSLICY, 1);
 
@@ -741,10 +750,6 @@ int main() {
     // initialization
     Grid uHost(nCellsX, nCellsY, CPU);  // data on CPU for recording
     Grid u(nCellsX, nCellsY, GPU);  // data in conservative form on GPU
-    Grid uBarL(nCellsX, nCellsY, GPU);  // data after half-time evolution on GPU
-    Grid uBarR(nCellsX, nCellsY, GPU);  // data after half-time evolution on GPU
-    Grid Flux(nCellsX, nCellsY, GPU);  // fluxes on GPU
-
     initialize<<<dimGrid, dimBlock>>>(u, x0, y0, dx, dy, case_id, bubble_center_x, bubble_center_y, bubble_radius);
     CUDA_CHECK;
 
@@ -757,6 +762,8 @@ int main() {
     int counter = 0;
     do {
         start = clock();
+        // check memory usage
+        if (counter == 0) {checkKernelAttributes();}
 
         // compute time step
         startdt = clock();
@@ -770,11 +777,7 @@ int main() {
 
         // x-direction evolution
         startx = clock();
-        SLIC_Preparation_X<<<dimGridSLICX, dimBlockSLICX>>>(uBarL, uBarR, u, dx, dy, dt);
-        CUDA_CHECK;
-        SLIC_CalFlux_X<<<dimGridSLICX, dimBlockSLICX>>>(Flux, uBarL, uBarR, dx, dy, dt);
-        CUDA_CHECK;
-        SLIC_Update_X<<<dimGridSLICX, dimBlockSLICX>>>(u, Flux, dx, dt);
+        SLIC_Evolution_X<<<dimGridSLICX, dimBlockSLICX>>>(u, dx, dy, dt);
         CUDA_CHECK;
         endx = clock();
         elapsx += (double)(endx - startx) / CLOCKS_PER_SEC;
@@ -788,11 +791,7 @@ int main() {
 
         // y-direction evolution
         starty = clock();
-        SLIC_Preparation_Y<<<dimGridSLICY, dimBlockSLICY>>>(uBarL, uBarR, u, dx, dy, dt);
-        CUDA_CHECK;
-        SLIC_CalFlux_Y<<<dimGridSLICY, dimBlockSLICY>>>(Flux, uBarL, uBarR, dx, dy, dt);
-        CUDA_CHECK;
-        SLIC_Update_Y<<<dimGridSLICY, dimBlockSLICY>>>(u, Flux, dy, dt);
+        SLIC_Evolution_Y<<<dimGridSLICY, dimBlockSLICY>>>(u, dx, dy, dt);
         CUDA_CHECK;
         endy = clock();
         elapsy += (double)(endy - starty) / CLOCKS_PER_SEC;
@@ -817,9 +816,6 @@ int main() {
 
     // release memory
     cudaFree(u.data);
-    cudaFree(uBarL.data);
-    cudaFree(uBarR.data);
-    cudaFree(Flux.data);
     delete[] uHost.data;
 
     // output time recording
