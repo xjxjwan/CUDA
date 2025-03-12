@@ -17,12 +17,12 @@ gamma = 1.4
 # case_id = 1
 # case_name = 'QudrantTest'
 # tStop = 0.3
-# figure_id = 1
+# figure_id = 11
 
 case_id = 2
 case_name = 'Shock-Bubble'
-tStop = 7.8
-figure_id = 2
+tStop = 19
+figure_id = 15
 
 if case_id in [1]:
     x0, x1 = 0.0, 1.0
@@ -115,7 +115,7 @@ def visualize_single(folder_path, device, cur_ax, var_id, t):
     cbar.formatter.set_powerlimits((-2, 2))  # 在 10^-2 到 10^2 之外才用科学计数法
     cbar.update_ticks()
         
-    cur_ax.set_title(label_list[var_id] + ", " + device, size=20)
+    cur_ax.set_title(label_list[var_id] + ", " + device + ", T = %.1f" % tStop, size=20)
     cur_ax.set_xlabel('X', size=20)
     cur_ax.set_ylabel('Y', size=20)
 

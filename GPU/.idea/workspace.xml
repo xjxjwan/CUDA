@@ -25,6 +25,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5be5457d-0ad9-4ea9-9ade-41b22bcb1e0c" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,11 +88,6 @@
   }
 }</component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="GPU" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="GPU" TARGET_NAME="GPU" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="GPU" RUN_TARGET_NAME="GPU">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -173,6 +169,9 @@
       <workItem from="1741185872403" duration="7749000" />
       <workItem from="1741212896596" duration="4512000" />
       <workItem from="1741296862011" duration="7974000" />
+      <workItem from="1741538013719" duration="3764000" />
+      <workItem from="1741649455375" duration="1992000" />
+      <workItem from="1741699116722" duration="1323000" />
     </task>
     <servers />
   </component>
