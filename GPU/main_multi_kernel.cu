@@ -589,7 +589,7 @@ void dataRecord(Grid uHost, Grid u, const int case_id, const double nCellsX, con
 
     // check whether the directory exists, create one if not
     std::ostringstream folderPath;
-    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/GPU/res/Case_" << case_id;
+    folderPath << "res/Case_" << case_id;
     std::string caseFolder = folderPath.str();
     if (!fs::exists(caseFolder)) {
         fs::create_directories(caseFolder);

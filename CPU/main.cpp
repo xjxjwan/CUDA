@@ -1,7 +1,3 @@
-//
-// Created by Lenovo on 24-11-04.
-//
-
 #include <algorithm>
 #include <array>
 #include <vector>
@@ -66,15 +62,6 @@ double computeTimeStep(const std::vector<std::vector<std::array<double, 4>>>& u,
             double vel = pow(pow(cur_u, 2) + pow(cur_v, 2), 0.5);  // non-negative
             double cur_Cs = pow(gama * u_prim[3] / u_prim[0], 0.5);  // p and rho cannot be negative
             double cur_a = vel + cur_Cs;
-
-            // // debug
-            // if (std::isnan(cur_a)) {
-            //     std::cout << u[i][j][0] << " " << u[i][j][1] << " " << u[i][j][2] << " " << u[i][j][3] << std::endl;
-            //     std::cout << i << " " << j << " " << u_prim[3] << " " << u_prim[0] << std::endl;
-            //     std::cout << vel << " " << cur_Cs << std::endl;
-            //     assert(false);
-            // }
-
             a_list.push_back(cur_a);  // the largest eigenvalue (wave speed)
         }
     }
@@ -137,7 +124,6 @@ std::vector<std::array<double, 4>> halfTimeStepUpdateX(std::array<double, 4> con
     const double& dx, const double& dt, const double& gama) {
 
     // variable substitution
-    // 注意这里L,R指的是当前小格的左右边界
     const double& rhoL = uBarL[0], momxL = uBarL[1], momyL = uBarL[2], EL = uBarL[3];
     const double& rhoR = uBarR[0], momxR = uBarR[1], momyR = uBarR[2], ER = uBarR[3];
     std::array<double, 4> uBarL_prim = cons2prim(uBarL, gama);
@@ -171,7 +157,6 @@ std::vector<std::array<double, 4>> halfTimeStepUpdateY(std::array<double, 4> con
     const double& dy, const double& dt, const double& gama) {
 
     // variable substitution
-    // 注意这里D, U指的是当前小格的下、上边界
     const double& rhoD = uBarD[0], momxD = uBarD[1], momyD = uBarD[2], ED = uBarD[3];
     const double& rhoU = uBarU[0], momxU = uBarU[1], momyU = uBarU[2], EU = uBarU[3];
     std::array<double, 4> uBarD_prim = cons2prim(uBarD, gama);
@@ -286,23 +271,19 @@ std::array<double, 4> getFluxY(std::array<double, 4> const& u_i, std::array<doub
 void setBoundaryCondition(std::vector<std::vector<std::array<double, 4>>>& u, const int& nCellsX, const int& nCellsY) {
 
     // transmissive boundary condition
-    // 左边界
     for (int i = 2; i < nCellsX + 2; i++) {
         u[i][0] = u[i][2];
         u[i][1] = u[i][2];
     }
-    // 右边界
     for (int i = 2; i < nCellsX + 2; i++) {
         u[i][nCellsY + 2] = u[i][nCellsY + 1];
         u[i][nCellsY + 3] = u[i][nCellsY + 1];
     }
-    // 上边界
-    for (int j = 0; j < nCellsY + 4; j++) {  // 包括ghost cells
+    for (int j = 0; j < nCellsY + 4; j++) {
         u[0][j] = u[2][j];
         u[1][j] = u[2][j];
     }
-    // 下边界
-    for (int j = 0; j < nCellsY + 4; j++) {  // 包括ghost cells
+    for (int j = 0; j < nCellsY + 4; j++) {
         u[nCellsX + 2][j] = u[nCellsX + 1][j];
         u[nCellsX + 3][j] = u[nCellsX + 1][j];
     }
@@ -324,7 +305,7 @@ void dataRecord(const std::vector<std::vector<std::array<double, 4>>>& u, const 
 
     // check whether the directory exists, create one if not
     std::ostringstream folderPath;
-    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/CPU/res/Case_" << case_id;
+    folderPath << "res/Case_" << case_id;
     std::string caseFolder = folderPath.str();
     if (!fs::exists(caseFolder)) {
         fs::create_directories(caseFolder);
@@ -340,70 +321,6 @@ void dataRecord(const std::vector<std::vector<std::array<double, 4>>>& u, const 
             // std::cout << x0 + (i - 1) * dx << ", " << u[i][0] << ", " << u[i][1] << ", " << u[i][2] << std::endl;
             outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
             << ", " << u_prim[i][j][0] << ", " << u_prim[i][j][1] << ", " << u_prim[i][j][2] << ", " << u_prim[i][j][3]
-            << std::endl;
-        }
-    }
-    outFile.close();
-}
-
-
-void dataRecordDebug(const std::vector<std::vector<std::array<double, 4>>>& u, const int case_id, const double nCellsX,
-    const double nCellsY, const double x0, const double y0, const double dx, const double dy,
-    std::string name, const double gama) {
-
-    // transform
-    std::vector<std::vector<std::array<double, 4>>> u_prim;
-    u_prim.resize(nCellsX + 4, std::vector<std::array<double, 4>>(nCellsY + 4));
-    for (int i = 0; i < nCellsX + 4; i++) {
-        for (int j = 0; j < nCellsY + 4; j++) {
-            u_prim[i][j] = cons2prim(u[i][j], gama);
-        }
-    }
-
-    // check whether the directory exists, create one if not
-    std::ostringstream folderPath;
-    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/Debugging";
-    std::string caseFolder = folderPath.str();
-    if (!fs::exists(caseFolder)) {
-        fs::create_directories(caseFolder);
-    }
-
-    // data recording
-    std::ostringstream oss;
-    oss << caseFolder << "/CPU_Case" << case_id << "_" << name << ".txt";
-    std::string fileName = oss.str();
-    std::fstream outFile(fileName, std::ios::out);
-    for (int i = 2; i < nCellsX + 2; i++) {
-        for (int j = 2; j < nCellsY + 2; j++) {
-            outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
-            << ", " << u_prim[i][j][0] << ", " << u_prim[i][j][1] << ", " << u_prim[i][j][2] << ", " << u_prim[i][j][3]
-            << std::endl;
-        }
-    }
-    outFile.close();
-}
-
-
-void fluxRecordDebug(const std::vector<std::vector<std::array<double, 4>>>& flux, const int case_id, const double nCellsX,
-    const double nCellsY, const double x0, const double y0, const double dx, const double dy, std::string name) {
-
-    // check whether the directory exists, create one if not
-    std::ostringstream folderPath;
-    folderPath << "D:/Study_Master/WrittenAssignment/WorkSpace_CUDA/Debugging";
-    std::string caseFolder = folderPath.str();
-    if (!fs::exists(caseFolder)) {
-        fs::create_directories(caseFolder);
-    }
-
-    // data recording
-    std::ostringstream oss;
-    oss << caseFolder << "/CPU_Case" << case_id << "_" << name << ".txt";
-    std::string fileName = oss.str();
-    std::fstream outFile(fileName, std::ios::out);
-    for (int i = 2; i < nCellsX + 2; i++) {
-        for (int j = 2; j < nCellsY + 2; j++) {
-            outFile << x0 + (i - 1.5) * dx << ", " << y0 + (j - 1.5) * dy
-            << ", " << flux[i][j][0] << ", " << flux[i][j][1] << ", " << flux[i][j][2] << ", " << flux[i][j][3]
             << std::endl;
         }
     }
