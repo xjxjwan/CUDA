@@ -1,7 +1,0 @@
-# ninja log v6
-1	4718	7641113498267270	CMakeFiles/GPU.dir/main.cu.obj	b10ba3700fcdaf55
-4720	4885	7641113545461505	CMakeFiles/GPU.dir/cmake_device_link.obj	a4e40473c5ca5c3e
-4885	5173	7641113547110435	GPU.exe	7dd324e909da9aee
-2	4056	7641114111607506	CMakeFiles/GPU.dir/main.cu.obj	b10ba3700fcdaf55
-4056	4204	7641114152141147	CMakeFiles/GPU.dir/cmake_device_link.obj	a4e40473c5ca5c3e
-4204	4328	7641114153620918	GPU.exe	7dd324e909da9aee
